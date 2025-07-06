@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>رمز التحقق</title>
+  <style>
+    body {
+      background: linear-gradient(white, #ccc);
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 20px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: gray;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .timer {
+      margin-top: 15px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>أدخل رمز التحقق</h2>
+    <input type="text" id="code" placeholder="مثال: A1B2C3" maxlength="8">
+    <button onclick="checkCode()">تحقق</button>
+    <div class="timer">المتبقي: <span id="countdown">8:00</span></div>
+  </div>
+
+  <script>
+    function checkCode() {
+      const code = document.getElementById("code").value.trim();
+      if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
+        alert("✅ تم التحقق من الرمز بنجاح.");
+      } else {
+        alert("⚠️ الرمز غير صالح. يجب أن يكون بين 6 و8 أرقام أو حروف.");
+      }
+    }
+
+    // عداد تنازلي 8 دقائق
+    let timeLeft = 8 * 60;
+    const countdown = document.getElementById("countdown");
+    const timer = setInterval(() => {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      countdown.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        alert("⛔ انتهى الوقت.");
+      }
+      timeLeft--;
+    }, 1000);
+  </script>
+</body>
+</html>
