@@ -41,12 +41,9 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .counter, .timer {
+    .timer {
       text-align: center;
       margin-top: 20px;
-      color: #555;
-    }
-    .timer {
       color: red;
     }
   </style>
@@ -94,10 +91,6 @@
 
       <button type="submit">إرسال</button>
     </form>
-
-    <div class="counter">
-      عدد الزوار: <span id="visitorCount">0</span>
-    </div>
   </div>
 
   <!-- ✅ القسم الثاني: كود التحقق -->
@@ -109,14 +102,6 @@
   </div>
 
   <script>
-    // عداد الزوار المحلي
-    if (localStorage.visitorCount) {
-      localStorage.visitorCount = Number(localStorage.visitorCount) + 1;
-    } else {
-      localStorage.visitorCount = 1;
-    }
-    document.getElementById("visitorCount").textContent = localStorage.visitorCount;
-
     // إرسال النموذج إلى Formcarry ثم الانتقال إلى قسم الكود
     const form = document.getElementById('userForm');
     form.addEventListener('submit', function (e) {
