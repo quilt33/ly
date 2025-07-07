@@ -162,6 +162,13 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
+
+    #imagePreview {
+      width: 100%;
+      margin-bottom: 15px;
+      display: none;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -185,7 +192,8 @@
         <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
 
         <label for="image">إرفاق صورة (اختياري):</label>
-        <input type="file" id="image" name="image" accept="image/*" />
+        <input type="file" id="image" name="image" accept="image/*" capture="environment" />
+        <img id="imagePreview" src="" alt="معاينة الصورة" />
 
         <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
         <div id="timer"></div>
@@ -344,6 +352,23 @@
 
       return false;
     }
+
+    // ✅ معاينة الصورة قبل الإرسال
+    document.getElementById('image').addEventListener('change', function () {
+      const file = this.files[0];
+      const preview = document.getElementById('imagePreview');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = 'none';
+        preview.src = '';
+      }
+    });
   </script>
 </body>
 </html>
