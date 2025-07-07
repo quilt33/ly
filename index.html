@@ -2,74 +2,80 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>التقاط صورة بالكاميرا</title>
+  <title>إرسال صورة بالكاميرا</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
       text-align: center;
       padding: 20px;
+      background-color: #f4f4f4;
       direction: rtl;
     }
     video, canvas {
       border: 1px solid #ccc;
-      margin: 10px 0;
-      width: 100%;
-      max-width: 300px;
+      max-width: 100%;
+      width: 300px;
+      margin-bottom: 10px;
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin: 5px;
+      margin: 10px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h2>📷 التقاط صورة بالكاميرا</h2>
+
+  <h2>📷 التقاط صورة بالكاميرا وإرسالها</h2>
 
   <video id="video" autoplay playsinline></video><br>
-  <button onclick="takeSnapshot()">📸 التقاط صورة</button>
+  <button onclick="takePhoto()">📸 التقاط صورة</button>
 
-  <canvas id="canvas" style="display:none;"></canvas>
-
-  <form id="imageForm">
-    <input type="hidden" name="image" id="imageInput">
+  <form id="form">
+    <input type="file" name="photo" id="fileInput" style="display: none;">
     <button type="submit">📤 إرسال الصورة</button>
   </form>
 
-  <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const imageInput = document.getElementById('imageInput');
-    const form = document.getElementById('imageForm');
+  <canvas id="canvas" style="display: none;"></canvas>
 
-    // تشغيل الكاميرا
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const fileInput = document.getElementById("fileInput");
+    const form = document.getElementById("form");
+
+    // تفعيل الكاميرا
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         video.srcObject = stream;
       })
-      .catch(error => {
-        alert('خطأ في تشغيل الكاميرا: ' + error.message);
+      .catch(err => {
+        alert("تعذر الوصول إلى الكاميرا: " + err.message);
       });
 
-    // التقاط صورة وتحويلها إلى base64
-    function takeSnapshot() {
-      const context = canvas.getContext('2d');
+    // التقاط صورة وتخزينها كملف
+    function takePhoto() {
+      const context = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataURL = canvas.toDataURL('image/png');
-      imageInput.value = dataURL;
-      canvas.style.display = 'block';
+
+      canvas.toBlob(blob => {
+        const file = new File([blob], "photo.png", { type: "image/png" });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        alert("✅ تم التقاط الصورة. اضغط إرسال.");
+      }, "image/png");
     }
 
-    // إرسال الصورة إلى Formcarry
-    form.addEventListener('submit', async function(e) {
+    // إرسال النموذج
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const formData = new FormData(form);
 
-      const response = await fetch("https://formcarry.com/s/a-Yw-WFDEqO", {
+      const response = await fetch("https://formspree.io/f/xyzjqzpo", {
         method: "POST",
         body: formData,
         headers: {
@@ -78,11 +84,13 @@
       });
 
       if (response.ok) {
-        alert("✅ تم إرسال الصورة بنجاح");
+        alert("✅ تم إرسال الصورة بنجاح!");
+        form.reset();
       } else {
-        alert("❌ حدث خطأ أثناء الإرسال");
+        alert("❌ حدث خطأ أثناء الإرسال.");
       }
     });
   </script>
+
 </body>
 </html>
