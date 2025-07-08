@@ -2,60 +2,64 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>طلب تسجيل </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نموذج تسجيل</title>
   <style>
     body {
       font-family: Tahoma, sans-serif;
-      background: #f5f5f5;
       margin: 0;
-      height: 100vh;
+      padding: 0;
+      background-color: #f5f5f5;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     .form-container {
-      width: 280px;
       background: #fff;
-      padding: 15px 10px;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.08);
-      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
     .form-group {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       text-align: right;
     }
     label {
-      font-size: 12px;
+      font-size: 14px;
       display: block;
-      margin-bottom: 3px;
+      margin-bottom: 5px;
     }
     input, select {
       width: 100%;
-      padding: 5px 6px;
-      font-size: 12px;
+      padding: 10px 8px;
+      font-size: 14px;
       border-radius: 4px;
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
     button {
       width: 100%;
-      padding: 6px;
-      margin-top: 8px;
-      font-size: 13px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 15px;
       background-color: #005fa3;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
     }
     button#resendBtn {
       background-color: #888;
     }
     #timer {
-      font-size: 12px;
+      font-size: 13px;
       color: #c00;
-      margin-top: 6px;
+      margin-top: 8px;
+      text-align: center;
     }
     #verification-section {
       display: none;
