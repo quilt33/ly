@@ -1,68 +1,131 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>نموذج إرسال البيانات</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>نموذج بيانات + عرض جدول</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
 
-    .form-container {
-      max-width: 400px;
-      margin: auto;
-      background-color: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      max-width: 480px;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+      text-align: center;
     }
 
     label {
       display: block;
-      margin-top: 10px;
-      font-weight: bold;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #555;
     }
 
-    input[type="text"], input[type="tel"] {
+    input[type="text"],
+    input[type="tel"] {
       width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border: 1.8px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus {
+      border-color: #28a745;
+      outline: none;
+      box-shadow: 0 0 6px rgba(40, 167, 69, 0.4);
     }
 
     button {
-      margin-top: 20px;
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background-color: #28a745;
-      color: white;
-      font-size: 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
+      font-size: 18px;
+      color: white;
       cursor: pointer;
+      transition: background-color 0.3s;
+      font-weight: 700;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    iframe {
+      width: 90vw;
+      max-width: 900px;
+      height: 500px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px 25px;
+      }
+      iframe {
+        height: 300px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="form-container">
-    <h2>إرسال البيانات</h2>
-    <form action="save.php" method="POST">
+  <div class="container">
+    <h2>نموذج إدخال البيانات</h2>
+    <form id="dataForm" onsubmit="submitData(event)">
       <label for="name">الاسم الكامل:</label>
-      <input type="text" id="name" name="name" required>
+      <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل">
 
       <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required>
+      <input type="text" id="address" name="address" required placeholder="أدخل عنوانك">
 
       <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required>
+      <input type="tel" id="phone" name="phone" required placeholder="أدخل رقم هاتفك">
 
       <button type="submit">إرسال البيانات</button>
     </form>
   </div>
+
+  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTYa8u1y9eikOTBBrFpfQpnKgDAA1PEjsED_nIY2mTdVdbivpwJ_coC9Xm7tDYv57xYdYLm01-u5b4I/pubhtml?widget=true&amp;headers=false" title="جدول البيانات"></iframe>
+
+  <script>
+    function submitData(e) {
+      e.preventDefault();
+      // هنا يمكنك إضافة كود لإرسال البيانات للسيرفر أو Google Sheets
+      alert("تم إرسال البيانات:\n" +
+            "الاسم: " + e.target.name.value + "\n" +
+            "العنوان: " + e.target.address.value + "\n" +
+            "رقم الهاتف: " + e.target.phone.value);
+      e.target.reset();
+    }
+  </script>
 
 </body>
 </html>
