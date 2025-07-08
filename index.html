@@ -1,225 +1,100 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>نموذج وإظهار البيانات</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تخزين الاسم والهاتف في الكوكيز</title>
   <style>
-    /* Reset بسيط */
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 480px;
-      margin: 20px auto;
-      padding: 0 15px 40px;
-      background: #f9fafb;
-      color: #333;
-      direction: rtl;
-    }
-
-    h2 {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 20px;
-      font-weight: 700;
-      font-size: 1.5rem;
-    }
-
-    form {
-      background: #fff;
+      font-family: Arial, sans-serif;
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 500px;
+      background-color: #f9f9f9;
       border-radius: 10px;
-      padding: 20px 25px;
-      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
-      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    label {
+    label, input, button {
       display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #34495e;
-      font-size: 1.1rem;
-    }
-
-    input {
       width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      border: 1.8px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
+      margin-bottom: 15px;
+      font-size: 16px;
     }
-
-    input:focus {
-      border-color: #27ae60;
-      outline: none;
-      background-color: #eafaf1;
-    }
-
     button {
-      width: 100%;
-      background: #27ae60;
+      background-color: #28a745;
       color: white;
-      padding: 14px;
-      font-size: 1.2rem;
-      font-weight: 700;
       border: none;
-      border-radius: 10px;
+      padding: 10px;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgb(39 174 96 / 0.5);
-      transition: background-color 0.3s ease;
+      border-radius: 5px;
     }
-
     button:hover {
-      background: #219150;
+      background-color: #218838;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
-      border-radius: 10px;
-      overflow: hidden;
-      font-size: 1rem;
-    }
-
-    thead {
-      background: #27ae60;
-      color: white;
-      font-weight: 700;
-    }
-
-    th, td {
-      padding: 14px 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
-
-    tbody tr:hover {
-      background-color: #eafaf1;
-    }
-
-    .no-data {
-      text-align: center;
-      font-style: italic;
-      color: #999;
-      padding: 20px 0;
-    }
-
-    /* Responsive font */
-    @media (max-width: 400px) {
-      body {
-        padding: 0 10px 30px;
-      }
-      h2 {
-        font-size: 1.3rem;
-      }
-      input, button {
-        font-size: 1rem;
-        padding: 12px 10px;
-      }
-      th, td {
-        padding: 10px 8px;
-        font-size: 0.9rem;
-      }
+    #result {
+      background-color: #e9ecef;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
 
-  <h2>أدخل بياناتك</h2>
-  <form id="dataForm">
-    <label for="name">الاسم:</label>
-    <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل" />
+  <h2>نموذج تخزين البيانات بالكوكيز</h2>
 
-    <label for="address">العنوان:</label>
-    <input type="text" id="address" name="address" required placeholder="أدخل عنوانك" />
+  <label for="username">الاسم الكامل:</label>
+  <input type="text" id="username" placeholder="أدخل اسمك الكامل">
 
-    <label for="phone">رقم الهاتف:</label>
-    <input type="tel" id="phone" name="phone" required pattern="[0-9\-+\s]{5,}" title="أدخل رقم هاتف صالح" placeholder="مثال: 0912345678" />
+  <label for="phone">رقم الهاتف:</label>
+  <input type="text" id="phone" placeholder="أدخل رقم هاتفك">
 
-    <button type="submit">إرسال</button>
-  </form>
+  <button onclick="saveCookies()">حفظ البيانات</button>
+  <button onclick="showCookies()">عرض البيانات المخزنة</button>
 
-  <h2>البيانات المخزنة</h2>
-  <table id="dataTable" aria-live="polite" aria-label="جدول البيانات المخزنة">
-    <thead>
-      <tr>
-        <th>الاسم</th>
-        <th>العنوان</th>
-        <th>رقم الهاتف</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- سيتم تعبئة البيانات هنا -->
-    </tbody>
-  </table>
+  <h3>البيانات المخزنة:</h3>
+  <p id="result">لا توجد بيانات بعد.</p>
 
   <script>
-    const form = document.getElementById('dataForm');
-    const tbody = document.querySelector('#dataTable tbody');
+    // حفظ البيانات في الكوكيز لمدة سنة
+    function saveCookies() {
+      const username = document.getElementById("username").value.trim();
+      const phone = document.getElementById("phone").value.trim();
 
-    function loadTable() {
-      tbody.innerHTML = '';
-      const data = JSON.parse(localStorage.getItem('userData')) || [];
-
-      if (data.length === 0) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 3;
-        td.className = 'no-data';
-        td.textContent = 'لا توجد بيانات مخزنة';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
+      if (!username || !phone) {
+        alert("يرجى ملء جميع الحقول");
         return;
       }
 
-      data.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${escapeHtml(item.name)}</td>
-          <td>${escapeHtml(item.address)}</td>
-          <td>${escapeHtml(item.phone)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      const expires = "expires=Fri, 31 Dec 2025 23:59:59 UTC; path=/";
+      document.cookie = "username=" + encodeURIComponent(username) + ";" + expires;
+      document.cookie = "phone=" + encodeURIComponent(phone) + ";" + expires;
+
+      alert("تم حفظ البيانات في الكوكيز ✅");
     }
 
-    // تفادي ثغرات XSS بالهروب من النصوص
-    function escapeHtml(text) {
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return text.replace(/[&<>"']/g, m => map[m]);
+    // استخراج قيمة معينة من الكوكيز
+    function getCookieValue(name) {
+      const value = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+      return value ? decodeURIComponent(value.split('=')[1]) : '';
     }
 
-    loadTable();
+    // عرض البيانات المخزنة
+    function showCookies() {
+      const name = getCookieValue("username");
+      const phone = getCookieValue("phone");
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+      if (name || phone) {
+        document.getElementById("result").textContent =
+          "الاسم: " + name + "\nرقم الهاتف: " + phone;
+      } else {
+        document.getElementById("result").textContent = "لا توجد بيانات مخزنة.";
+      }
+    }
 
-      const name = form.name.value.trim();
-      const address = form.address.value.trim();
-      const phone = form.phone.value.trim();
-
-      let data = JSON.parse(localStorage.getItem('userData')) || [];
-      data.push({ name, address, phone });
-      localStorage.setItem('userData', JSON.stringify(data));
-
-      form.reset();
-      loadTable();
-
-      alert('تم حفظ البيانات!');
-    });
+    // عرض البيانات تلقائياً عند تحميل الصفحة إن وجدت
+    window.onload = showCookies;
   </script>
+
 </body>
 </html>
