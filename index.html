@@ -75,6 +75,14 @@
       background-color: #218838;
     }
 
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 600;
+      color: #28a745;
+      min-height: 24px;
+    }
+
     iframe {
       width: 90vw;
       max-width: 900px;
@@ -99,32 +107,57 @@
 
   <div class="container">
     <h2>نموذج إدخال البيانات</h2>
-    <form id="dataForm" onsubmit="submitData(event)">
+    <form id="dataForm">
       <label for="name">الاسم الكامل:</label>
-      <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل">
+      <input type="text" id="name" name="name" required placeholder="أدخل اسمك الكامل" pattern="[\u0600-\u06FF\s]+" title="يرجى إدخال حروف عربية فقط">
 
       <label for="address">العنوان:</label>
       <input type="text" id="address" name="address" required placeholder="أدخل عنوانك">
 
       <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required placeholder="أدخل رقم هاتفك">
+      <input type="tel" id="phone" name="phone" required placeholder="أدخل رقم هاتفك" pattern="[0-9+\-\s]{6,15}" title="يرجى إدخال رقم هاتف صحيح">
 
       <button type="submit">إرسال البيانات</button>
+      <div class="message" id="message"></div>
     </form>
   </div>
 
   <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTYa8u1y9eikOTBBrFpfQpnKgDAA1PEjsED_nIY2mTdVdbivpwJ_coC9Xm7tDYv57xYdYLm01-u5b4I/pubhtml?widget=true&amp;headers=false" title="جدول البيانات"></iframe>
 
   <script>
-    function submitData(e) {
+    // ضع هنا رابط تطبيق Google Apps Script بعد النشر (Web app URL)
+    const scriptURL = 'ضع_هنا_رابط_تطبيق_الويب_الخاص_بالسكريبت';
+
+    const form = document.getElementById('dataForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      // هنا يمكنك إضافة كود لإرسال البيانات للسيرفر أو Google Sheets
-      alert("تم إرسال البيانات:\n" +
-            "الاسم: " + e.target.name.value + "\n" +
-            "العنوان: " + e.target.address.value + "\n" +
-            "رقم الهاتف: " + e.target.phone.value);
-      e.target.reset();
-    }
+
+      messageDiv.style.color = '#28a745';
+      messageDiv.textContent = "جاري إرسال البيانات...";
+
+      const formData = new FormData(form);
+
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+          if(data.status === 'success'){
+            messageDiv.style.color = '#28a745';
+            messageDiv.textContent = "تم إرسال البيانات بنجاح!";
+            form.reset();
+          } else {
+            messageDiv.style.color = '#d9534f';
+            messageDiv.textContent = "حدث خطأ أثناء الإرسال، حاول مرة أخرى.";
+            console.error(data.message);
+          }
+        })
+        .catch(err => {
+          messageDiv.style.color = '#d9534f';
+          messageDiv.textContent = "فشل الاتصال بالخادم.";
+          console.error('Error!', err.message);
+        });
+    });
   </script>
 
 </body>
