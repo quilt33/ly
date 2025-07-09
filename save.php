@@ -1,35 +1,29 @@
 <?php
-// الاتصال بقاعدة البيانات
-$servername = "localhost";
-$username = "root";       // اسم المستخدم في phpMyAdmin
-$password = "";           // كلمة المرور (فارغة غالبًا في XAMPP)
-$dbname = "form_data";    // اسم قاعدة البيانات
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbname = "user_paidads"; // تم تعديل اسم قاعدة البيانات
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-$conn->set_charset("utf8");
-
-// التأكد من الاتصال
+$conn = new mysqli($host, $user, $pass, $dbname);
 if ($conn->connect_error) {
-  die("فشل الاتصال: " . $conn->connect_error);
+    die("فشل الاتصال: " . $conn->connect_error);
 }
 
-// استلام البيانات من النموذج
-$name = $_POST['name'];
-$address = $_POST['address'];
+// استقبال البيانات من النموذج
+$full_name = $_POST['full_name'];
+$city = $_POST['city'];
+$identity = $_POST['identity'];
 $phone = $_POST['phone'];
 
 // إدخال البيانات في الجدول
-$sql = "INSERT INTO users (name, address, phone) VALUES (?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("sss", $name, $address, $phone);
-$stmt->execute();
+$sql = "INSERT INTO users (الاسم_بالكامل, المدينة, حامل_تعريف, رقم_الهاتف)
+        VALUES ('$full_name', '$city', '$identity', '$phone')";
 
-if ($stmt->affected_rows > 0) {
-  echo "✅ تم حفظ البيانات بنجاح!";
+if ($conn->query($sql) === TRUE) {
+    echo "✅ تم حفظ البيانات بنجاح.";
 } else {
-  echo "❌ حدث خطأ أثناء الحفظ.";
+    echo "❌ خطأ: " . $conn->error;
 }
 
-$stmt->close();
 $conn->close();
 ?>
